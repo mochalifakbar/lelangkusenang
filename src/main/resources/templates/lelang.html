@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" th:href="@{/icon/ikon.jpg}" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <title>Barang lelang</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <img th:src="@{/icon/ikon.jpg}" alt="logo" class="logo">
+            <span class="logo-text">Lelang hitam</span>
+        </nav>
+        <nav>
+            <a href="/beranda" class="menu">Beranda</a>
+            <a href="/lelang" class="menu">Lelang</a>
+            <a href="/barang" class="menu">Barang</a>
+            <div class="dropdown">
+                <a class="menu">Transaksi</a>
+                <div class="dropdown-content">
+                <a href="/transaksi-penjual">Penjual</a>
+                <a href="/transaksi-pembeli">Pembeli</a>
+                </div>
+            </div>
+            <a href="/chat" class="menu">Chat</a>
+        </nav>
+        <nav>
+            <a href="/profil"><img th:src="@{${user.fotoProfil}}" alt="Foto Profil" class="foto-profil"></a>
+            <form action="/logout" method="delete">
+                <button class="button" type="submit">keluar</button>
+            </form>
+        </nav>
+    </header>
+    <main class="mainLelang">
+        <table id="barang">
+            <thead>
+                <tr>
+                    <th>Nama Barang</th>
+                    <th>Deskripsi Barang</th>
+                    <th>Batas Harga</th>
+                    <th>Foto Barang</th>
+                    <th>Harga Awal</th>
+                    <th>Kelipatan Bid</th>
+                    <th>Batas Waktu</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="barang : ${barang}">
+                    <td th:text="${barang.namaBarang}"></td>
+                    <td th:text="${barang.deskripsiBarang}"></td>
+                    <td th:text="${#numbers.formatDecimal(barang.batasHarga, 0, 'POINT', 0, 'COMMA')}"></td>
+                    <td><img th:src="@{${barang.fotoBarang}}" alt="Foto Barang" class="gambarBarang"></td>
+                    <td th:text="${#numbers.formatDecimal(barang.hargaAwal, 0, 'POINT', 0, 'COMMA')}"></td>
+                    <td th:text="${#numbers.formatDecimal(barang.kelipatanBid, 0, 'POINT', 0, 'COMMA')}"></td>
+                    <td th:text="${barang.batasWaktu}"></td>
+                    <td>
+                        <a th:href="@{/cekbarang/(id=${barang.id})}" class="buttonA">cek</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+    <footer>
+
+    </footer>
+</body>
+</html>

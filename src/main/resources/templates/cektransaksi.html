@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" th:href="@{/icon/ikon.jpg}" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <title>cek transaksi</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <img th:src="@{/icon/ikon.jpg}" alt="logo" class="logo">
+            <span class="logo-text">Lelang hitam</span>
+        </nav>
+        <nav>
+            <a href="/beranda" class="menu">Beranda</a>
+            <a href="/lelang" class="menu">Lelang</a>
+            <a href="/barang" class="menu">Barang</a>
+            <div class="dropdown">
+                <a class="menu">Transaksi</a>
+                <div class="dropdown-content">
+                <a href="/transaksi-penjual">Penjual</a>
+                <a href="/transaksi-pembeli">Pembeli</a>
+                </div>
+            </div>
+        </nav>
+        <nav>
+            <a href="/profil"><img th:src="@{${user.fotoProfil}}" alt="Foto Profil" class="foto-profil"></a>
+            <form action="/logout" method="delete">
+                <button class="button" type="submit">keluar</button>
+            </form>
+        </nav>
+    </header>
+    <main>
+        <div class="main">
+            <div class="templateform">
+                <div class="transaksiLayout">
+                    <div class="informasiAkun">
+                        <div class="transaksi">
+                            <span class="informasiTransaksi">Pembeli</span>
+                            <div class="penengahX">
+                                <img th:src="@{${transaksi.pembeli.fotoProfil}}" class="profil-foto informasiTransaksi">
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Nama Pembeli</p>
+                                <p th:text="${transaksi.pembeli.nama}" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Email</p>
+                                <p th:text="${transaksi.pembeli.email}" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Username</p>
+                                <p th:text="${transaksi.pembeli.username}" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Tanggal Lahir</p>
+                                <p th:text="${transaksi.pembeli.tanggalLahir}" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Nomor Telepon</p>
+                                <p th:text="${transaksi.pembeli.nomorTelepon}" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Provinsi</p>
+                                <p id="provinsiName" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Kota</p>
+                                <p id="kotaName" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Kecamatan</p>
+                                <p id="kecamatanName" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Desa</p>
+                                <p id="desaName" class="pTransaksi"></p>
+                            </div>                            
+                            <div class="itembungkus">
+                                <p class="itempart">Detail Alamat</p>
+                                <p th:text="${alamatPembeli.detail}" class="pTransaksi" id="detailDesaName"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="informasiAkun">
+                        <div class="transaksi">
+                            <span class="informasiTransaksi">Penjual</span>
+                            <div class="penengahX">
+                                <img th:src="@{${transaksi.penjual.fotoProfil}}" class="profil-foto informasiTransaksi">
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Nama Penjual</p>
+                                <p th:text="${transaksi.penjual.nama}" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Email</p>
+                                <p th:text="${transaksi.penjual.email}" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Username</p>
+                                <p th:text="${transaksi.penjual.username}" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Tanggal Lahir</p>
+                                <p th:text="${transaksi.penjual.tanggalLahir}" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Nomor Telepon</p>
+                                <p th:text="${transaksi.penjual.nomorTelepon}" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Provinsi</p>
+                                <p id="provinsiNamePenjual" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Kota</p>
+                                <p id="kotaNamePenjual" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Kecamatan</p>
+                                <p id="kecamatanNamePenjual" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Desa</p>
+                                <p id="desaNamePenjual" class="pTransaksi"></p>
+                            </div>                            
+                            <div class="itembungkus">
+                                <p class="itempart">Detail Alamat</p>
+                                <p th:text="${alamatPenjual.detail}" class="pTransaksi" id="detailDesaNamePenjual"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="informasiAkun">
+                        <div class="transaksi">
+                            <span class="informasiTransaksi">Barang</span>
+                            <div class="penengahX">
+                                <img th:src="@{${transaksi.barang.fotoBarang}}" class="profil-foto informasiTransaksi">
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Nama Barang</p>
+                                <p th:text="${transaksi.barang.namaBarang}" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Deskripsi</p>
+                                <p th:text="${transaksi.barang.deskripsiBarang}" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Harga awal</p>
+                                <p th:text="${#numbers.formatDecimal(transaksi.barang.hargaAwal, 0, 'POINT', 0, 'COMMA')}" class="pTransaksi" id="hargaAwal"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Batas Harga</p>
+                                <p th:text="${#numbers.formatDecimal(transaksi.barang.batasHarga, 0, 'POINT', 0, 'COMMA')}" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Kelipatan Bid</p>
+                                <p th:text="${#numbers.formatDecimal(transaksi.barang.kelipatanBid, 0, 'POINT', 0, 'COMMA')}" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Batas Waktu</p>
+                                <p th:text="${transaksi.barang.batasWaktu}" class="pTransaksi"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="informasiAkun">
+                        <div class="transaksi">
+                            <span class="informasiTransaksi">Transaksi</span>
+                            <div class="itembungkus">
+                                <p class="itempart">Harga</p>
+                                <p th:text="${#numbers.formatDecimal(transaksi.harga, 0, 'POINT', 0, 'COMMA')}" class="pTransaksi" id="hargaTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Waktu Pembelian</p>
+                                <p th:text="${transaksi.waktuPembelian}" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Batas Pembayaran</p>
+                                <p th:text="${transaksi.batasWaktu}" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Waktu Pembayaran</p>
+                                <p th:text="${transaksi.waktuKonfirmasi} ?: 'BELUM DI BAYAR!'" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus">
+                                <p class="itempart">Status Transaksi</p>
+                                <p th:text="${transaksi.statusPembayaran}" class="pTransaksi"></p>
+                            </div>
+                            <div class="itembungkus" th:if="${transaksi.konfirmasiBayar == false}">
+                                <div th:if="${transaksi.pembeli.id == user.id}">
+                                    <p class="itempart">Konfirmasi Bayar</p>
+                                    <form action="/konfirmasiPembayaran" method="POST" enctype="multipart/form-data">
+                                        <input type="hidden" name="idTransaksi" th:value="${transaksi.id}">
+                                        <input type="file" name="fotoBukti" class="submitBayar" required>
+                                        <button type="submit" class="button">Kirim</button>
+                                    </form>
+                                </div>
+                                <div th:if="${transaksi.penjual.id == user.id}" class="itembungkus">
+                                    <p class="itempart">Konfirmasi Bayar</p>
+                                    <p class="pTransaksi">Pembeli belum membayar :(</p>
+                                </div>
+                            </div>
+                            <div th:unless="${transaksi.konfirmasiBayar == false}" class="itembungkus">
+                                <p class="itempart">Konfirmasi Bayar</p>
+                                <p class="pTransaksi">terbayar</p>
+                            </div>
+                            <div class="itembungkus">
+                                <div th:if="${transaksi.konfirmasiBayar == true}">
+                                    <p class="itempart">Download Nota</p>
+                                    <button id="download-pdf" class="button">bukti</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>       
+    </main>
+    <footer>
+
+    </footer>
+    <script>
+        $(document).ready(function() {
+            const API_KEY = 'c8645226-7050-554e-fc01-5d3972d8';
+            
+            let selectedProvinsiId = `[[${alamatPembeli.provinsi}]]`;
+            let selectedKabupatenId = `[[${alamatPembeli.kota}]]`;
+            let selectedKecamatanId = `[[${alamatPembeli.kecamatan}]]`;
+            let selectedKelurahanId = `[[${alamatPembeli.desa}]]`;
+            let selectedProvinsiIdPenjual = `[[${alamatPenjual.provinsi}]]`;
+            let selectedKabupatenIdPenjual = `[[${alamatPenjual.kota}]]`;
+            let selectedKecamatanIdPenjual = `[[${alamatPenjual.kecamatan}]]`;
+            let selectedKelurahanIdPenjual = `[[${alamatPenjual.desa}]]`;
+        
+            $.ajax({
+                url: 'https://api.goapi.io/regional/provinsi',
+                method: 'GET',
+                headers: { 'X-API-KEY': API_KEY },
+                success: function(response) {
+                    if (response.data) {
+                        $.each(response.data, function(index, item) {
+                            if (item.id == selectedProvinsiId) {
+                                $('#provinsiName').text(item.name);
+                                loadKabupaten(item.id);
+                            }
+                            if (item.id == selectedProvinsiIdPenjual) {
+                                $('#provinsiNamePenjual').text(item.name);
+                                loadKabupaten(item.id);
+                            }
+                        });
+                    }
+                },
+                error: function() {
+                    alert('Error fetching province data.');
+                }
+            });
+        
+            function loadKabupaten(provinsiId) {
+                $.ajax({
+                    url: `https://api.goapi.io/regional/kota?provinsi_id=${provinsiId}`,
+                    method: 'GET',
+                    headers: { 'X-API-KEY': API_KEY },
+                    success: function(response) {
+                        if (response.data) {
+                            $.each(response.data, function(index, item) {
+                                if (item.id == selectedKabupatenId) {
+                                    $('#kotaName').text(item.name);
+                                    loadKecamatan(item.id);
+                                }
+                                if (item.id == selectedKabupatenIdPenjual) {
+                                    $('#kotaNamePenjual').text(item.name);
+                                    loadKecamatan(item.id);
+                                }
+                            });
+                        }
+                    },
+                    error: function() {
+                        alert('Error fetching city data.');
+                    }
+                });
+            }
+        
+            function loadKecamatan(kabupatenId) {
+                $.ajax({
+                    url: `https://api.goapi.io/regional/kecamatan?kota_id=${kabupatenId}`,
+                    method: 'GET',
+                    headers: { 'X-API-KEY': API_KEY },
+                    success: function(response) {
+                        if (response.data) {
+                            $.each(response.data, function(index, item) {
+                                if (item.id == selectedKecamatanId) {
+                                    $('#kecamatanName').text(item.name);
+                                    loadKelurahan(item.id);
+                                }
+                                if (item.id == selectedKecamatanIdPenjual) {
+                                    $('#kecamatanNamePenjual').text(item.name);
+                                    loadKelurahan(item.id);
+                                }
+                            });
+                        }
+                    },
+                    error: function() {
+                        alert('Error fetching district data.');
+                    }
+                });
+            }
+        
+            function loadKelurahan(kecamatanId) {
+                $.ajax({
+                    url: `https://api.goapi.io/regional/kelurahan?kecamatan_id=${kecamatanId}`,
+                    method: 'GET',
+                    headers: { 'X-API-KEY': API_KEY },
+                    success: function(response) {
+                        if (response.data) {
+                            $.each(response.data, function(index, item) {
+                                if (item.id == selectedKelurahanId) {
+                                    $('#desaName').text(item.name);
+                                }
+                                if (item.id == selectedKelurahanIdPenjual) {
+                                    $('#desaNamePenjual').text(item.name);
+                                }
+                            });
+                        }
+                    },
+                    error: function() {
+                        alert('Error fetching village data.');
+                    }
+                });
+            }
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#download-pdf').click(function() {
+                const { jsPDF } = window.jspdf;
+                
+                const pembeli = {
+                    nama: '[[${transaksi.pembeli.nama}]]',
+                    email: '[[${transaksi.pembeli.email}]]',
+                    username: '[[${transaksi.pembeli.username}]]',
+                    tanggalLahir: '[[${transaksi.pembeli.tanggalLahir}]]',
+                    nomorTelepon: '[[${transaksi.pembeli.nomorTelepon}]]',
+                    alamat: $('#detailDesaName').text() + ', ' + $('#desaName').text() + ', ' + $('#kecamatanName').text() + ', ' + $('#kotaName').text() + ', ' + $('#provinsiName').text(),
+                };
+    
+                const penjual = {
+                    nama: '[[${transaksi.penjual.nama}]]',
+                    email: '[[${transaksi.penjual.email}]]',
+                    username: '[[${transaksi.penjual.username}]]',
+                    tanggalLahir: '[[${transaksi.penjual.tanggalLahir}]]',
+                    nomorTelepon: '[[${transaksi.penjual.nomorTelepon}]]',
+                    alamat: $('#detailDesaNamePenjual').text() + ', ' + $('#desaNamePenjual').text() + ', ' + $('#kecamatanNamePenjual').text() + ', ' + $('#kotaNamePenjual').text() + ', ' + $('#provinsiNamePenjual').text(),
+                };
+    
+                const barang = {
+                    namaBarang: '[[${transaksi.barang.namaBarang}]]',
+                    deskripsiBarang: '[[${transaksi.barang.deskripsiBarang}]]',
+                    hargaAwal: $('#hargaAwal').text(),
+                    batasHarga: '[[${transaksi.barang.batasHarga}]]',
+                    batasWaktu: '[[${transaksi.barang.batasWaktu}]]',
+                };
+    
+                const transaksi = {
+                    nomorTransaksi: '[[${transaksi.id}]]',
+                    tanggalTransaksi: '[[${transaksi.waktuKonfirmasi}]]',
+                    harga: $('#hargaTransaksi').text(),
+                    waktuPembelian: '[[${transaksi.waktuPembelian}]]',
+                    statusPembayaran: '[[${transaksi.statusPembayaran}]]',
+                    batasWaktu: '[[${transaksi.batasWaktu}]]',
+                    waktuPembayaran: '[[${transaksi.waktuKonfirmasi}]]',
+                };
+    
+                const doc = new jsPDF();
+                doc.setFontSize(16);
+                doc.text('Dokumen Pengesahan Transaksi Lelang', 55, 25);
+    
+                doc.setFontSize(12);
+    
+                doc.text(`Nomor Transaksi: ${transaksi.nomorTransaksi}`, 10, 40);
+                doc.text(`tanggal: ${transaksi.tanggalTransaksi}`, 10, 45);
+                
+                doc.text('PENGESAHAN', 90, 60);
+                doc.text(doc.splitTextToSize(`Dengan ini, Lelang Hitam menyatakan bahwa transaksi berikut telah diverifikasi dan dinyatakan sah:`, 180), 10, 75);
+                
+                doc.text(`Pembeli: ${pembeli.nama}`, 10, 95);
+                doc.text(`Email: ${pembeli.email}`, 15, 100);
+                doc.text(`Username: ${pembeli.username}`, 15, 105);
+                doc.text(`Nomor Telepon: ${pembeli.nomorTelepon}`, 15, 110);
+                doc.text(doc.splitTextToSize(`Alamat: ${pembeli.alamat}`, 180), 15, 115);
+    
+                doc.text(`Penjual: ${penjual.nama}`, 10, 130);
+                doc.text(`Email: ${penjual.email}`, 15, 135);
+                doc.text(`Username: ${penjual.username}`, 15, 140);
+                doc.text(`Nomor Telepon: ${penjual.nomorTelepon}`, 15, 145);
+                doc.text(doc.splitTextToSize(`Alamat: ${penjual.alamat}`, 180), 15, 150);
+    
+                doc.text('Barang:', 10, 165);
+                doc.text(`Nama: ${barang.namaBarang}`, 15, 170);
+                doc.text(`Deskripsi: ${barang.deskripsiBarang}`, 15, 175);
+                doc.text(`Harga Awal: ${barang.hargaAwal}`, 15, 180);
+    
+                doc.text('Detail Transaksi:', 10, 195);
+                doc.text(`Harga: ${transaksi.harga}`, 15, 200);
+                doc.text(`Waktu Pembelian: ${transaksi.waktuPembelian}`, 15, 205);
+                doc.text(`Status Pembayaran: ${transaksi.statusPembayaran}`, 15, 210);
+                doc.text(`Waktu pembayaran: ${transaksi.waktuPembayaran}`, 15, 215);
+
+                doc.text(doc.splitTextToSize(`Dokumen ini diterbitkan sebagai bukti bahwa transaksi telah disahkan sesuai dengan ketentuan yang berlaku.`, 180), 10, 225);
+                
+                doc.text('Lelang Hitam,', 13, 257);
+                doc.text(`Pembeli`, 16, 270);
+                doc.text(`${pembeli.nama}`, 9, 282);
+
+                doc.text('Lelang Hitam,', 160, 257);
+                doc.text(`penjual`, 163, 270);
+                doc.text(`${penjual.nama}`, 156, 282);
+    
+                doc.save('bukti_transaksi_lelang.pdf');
+            });
+        });
+    </script>  
+</body>
+</html>

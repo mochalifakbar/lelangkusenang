@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" th:href="@{/icon/ikon.jpg}" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <title>cek barang</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <img th:src="@{/icon/ikon.jpg}" alt="logo" class="logo">
+            <span class="logo-text">Lelang hitam</span>
+        </nav>
+        <nav>
+            <a href="/beranda" class="menu">Beranda</a>
+            <a href="/lelang" class="menu">Lelang</a>
+            <a href="/barang" class="menu">Barang</a>
+            <div class="dropdown">
+                <a class="menu">Transaksi</a>
+                <div class="dropdown-content">
+                <a href="/transaksi-penjual">Penjual</a>
+                <a href="/transaksi-pembeli">Pembeli</a>
+                </div>
+            </div>
+            <a href="/chat" class="menu">Chat</a>
+        </nav>
+        <nav>
+            <a href="/profil"><img th:src="@{${user.fotoProfil}}" alt="Foto Profil" class="foto-profil"></a>
+            <form action="/logout" method="delete">
+                <button class="button" type="submit">keluar</button>
+            </form>
+        </nav>
+    </header>
+    <main>
+        <div class="main">
+            <div class="templateform">
+                <div class="tampilanBarang">
+                    <div class="informasiBarang">
+                        <img th:src="@{${barang.fotoBarang}}" class="gambar-foto">
+                        <table id="lihatBarang">
+                            <tr>
+                                <td>Nama Barang: </td>
+                                <td th:text="${barang.namaBarang}"></td>
+                            </tr>
+                            <tr>
+                                <td>Deskripsi: </td>
+                                <td th:text="${barang.deskripsiBarang}"></td>
+                            </tr>
+                            <tr>
+                                <td>Batas Harga: </td>
+                                <td th:text="${#numbers.formatDecimal(barang.batasHarga, 0, 'POINT', 0, 'COMMA')}"></td>
+                            </tr>
+                            <tr>
+                                <td>Harga Awal: </td>
+                                <td th:text="${#numbers.formatDecimal(barang.hargaAwal, 0, 'POINT', 0, 'COMMA')}"></td>
+                            </tr>
+                            <tr>
+                                <td>Kelipatan Bid: </td>
+                                <td th:text="${#numbers.formatDecimal(barang.kelipatanBid, 0, 'POINT', 0, 'COMMA')}"></td>
+                            </tr>
+                            <tr>
+                                <td>Batas Waktu: </td>
+                                <td th:text="${barang.batasWaktu}"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="sesi-bid">
+                        <form th:action="@{/submit-bit}" method="post" class="form">
+                            <label for="bid" class="judul">Pilih Bid Anda:</label>
+                            <select name="bid" id="bid" class="inputoption">
+                                <option value="">Pilih Harga</option>
+                                <th:block th:each="bid : ${daftarBid}">
+                                    <option th:value="${bid}" th:text="${#numbers.formatDecimal(bid, 0, 'POINT', 0, 'COMMA')}"></option>
+                                </th:block>
+                            </select>
+                            <input type="hidden" name="id" th:value="${barang.id}">
+                            <div class="tengah">
+                                <button type="submit" class="button tengah">Ikut Bid</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table id="barang">
+            <thead>
+                <tr>
+                    <th>Id Pelelang</th>
+                    <th>Nama Pelelang</th>
+                    <th>Harga Bid</th>
+                    <th>Waktu Bid</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="barang : ${listLelang}">
+                    <td th:text="${barang.pelelang.id}"></td>
+                    <td th:text="${barang.pelelang.nama}"></td>
+                    <td th:text="${#numbers.formatDecimal(barang.hargaBid, 0, 'POINT', 0, 'COMMA')}"></td>
+                    <td th:text="${barang.waktuBid}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+    <footer>
+
+    </footer>
+</body>
+</html>

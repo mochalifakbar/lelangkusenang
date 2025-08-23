@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" th:href="@{/icon/ikon.jpg}" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <title>Beranda</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <img th:src="@{/icon/ikon.jpg}" alt="logo" class="logo">
+            <span class="logo-text">Lelang hitam</span>
+        </nav>
+        <nav>
+            <a href="/beranda" class="menu">Beranda</a>
+            <a href="/lelang" class="menu">Lelang</a>
+            <a href="/barang" class="menu">Barang</a>
+            <div class="dropdown">
+                <a class="menu">Transaksi</a>
+                <div class="dropdown-content">
+                <a href="/transaksi-penjual">Penjual</a>
+                <a href="/transaksi-pembeli">Pembeli</a>
+                </div>
+            </div>
+            <a href="/chat" class="menu">Chat</a>
+        </nav>
+        <nav>
+            <a href="/profil"><img th:src="@{${user.fotoProfil}}" alt="Foto Profil" class="foto-profil"></a>
+            <form action="/logout" method="delete">
+                <button class="button" type="submit">keluar</button>
+            </form>
+        </nav>
+    </header>
+    <main class="main">
+        <div class="templateForm">
+            <div class="slideshow-container">
+                <div th:each="barang : ${barang}" class="slide fade">
+                    <img th:src="@{${barang.fotoBarang}}" class="fotoSlide">
+                    <div class="text">
+                        <h3 th:text="${barang.namaBarang}"></h3>
+                        <p th:text="${barang.deskripsiBarang}"></p>
+                        <p><strong>Batas Harga:</strong> <span th:text="${#numbers.formatDecimal(barang.batasHarga, 0, 'POINT', 0, 'COMMA')}"></span></p>
+                        <p><strong>Harga Awal:</strong> <span th:text="${#numbers.formatDecimal(barang.hargaAwal, 0, 'POINT', 0, 'COMMA')}"></span></p>
+                        <p><strong>Kelipatan Bid:</strong> <span th:text="${#numbers.formatDecimal(barang.kelipatanBid, 0, 'POINT', 0, 'COMMA')}"></span></p>
+                        <p><strong>Batas Waktu:</strong> <span th:text="${barang.batasWaktu}"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+
+    </footer>
+    <script>
+        let slideIndex = 0;
+        showSlides();
+    
+        function showSlides() {
+            let slides = document.getElementsByClassName("slide");
+    
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+    
+            slideIndex++;
+            if (slideIndex > slides.length) {
+                slideIndex = 1;
+            }
+    
+            slides[slideIndex - 1].style.display = "block";
+    
+            setTimeout(showSlides, 3000);
+        }
+    </script>
+</body>
+</html>

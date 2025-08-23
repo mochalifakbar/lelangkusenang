@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" th:href="@{/icon/ikon.jpg}" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <title>Chat</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <img th:src="@{/icon/ikon.jpg}" alt="logo" class="logo">
+            <span class="logo-text">Lelang Hitam</span>
+        </nav>
+        <nav>
+            <a href="/beranda" class="menu">Beranda</a>
+            <a href="/lelang" class="menu">Lelang</a>
+            <a href="/barang" class="menu">Barang</a>
+            <div class="dropdown">
+                <a class="menu">Transaksi</a>
+                <div class="dropdown-content">
+                    <a href="/transaksi-penjual">Penjual</a>
+                    <a href="/transaksi-pembeli">Pembeli</a>
+                </div>
+            </div>
+            <a href="/chat" class="menu">Chat</a>
+        </nav>
+        <nav>
+            <a href="/profil"><img th:src="@{${user.fotoProfil}}" alt="Foto Profil" class="foto-profil"></a>
+            <form action="/logout" method="delete">
+                <button class="button" type="submit">Keluar</button>
+            </form>
+        </nav>
+    </header>
+    <main class="main">
+        <div class="templateChat">
+            <div class="tampilanBarang">
+                <div class="informasiChat">
+                    <div class="search-container">
+                        <input type="text" id="searchUser" placeholder="cari nama..." class="input">
+                        <ul id="userResults" class="ultipe"></ul>
+                    </div>
+            
+                    <div class="chat-list">
+                        <h3 class="judulInformasiAkun">Chat Anda:</h3>
+                        <ul id="chatList" class="ultipe">
+                            <li th:each="chat : ${userChats}">
+                                <a th:href="@{/chat/{id}(id=${chat.id})}" class="chat">
+                                    <div th:if="${user.nama == chat.user1.nama}">
+                                        Chat <span th:text="${chat.user2.nama}"></span>
+                                    </div>
+                                    <div th:unless="${user.nama == chat.user1.nama}">
+                                        Chat <span th:text="${chat.user1.nama}"></span>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        let userloggedInId = `[[${user.id}]]`;
+        $('#searchUser').on('input', function () {
+            let query = $(this).val();
+            if (query) {
+                $.get(`/searchUsers?query=${query}`, function (data) {
+                    let results = data.filter(user => user.id != userloggedInId).map(user => `<li><a href="/startChat/${user.id}" class="chat">${user.nama}</a></li>`);
+                    $('#userResults').html(results.join(''));
+                });
+            } else {
+                $('#userResults').empty();
+            }
+        });
+    </script>
+</body>
+</html>

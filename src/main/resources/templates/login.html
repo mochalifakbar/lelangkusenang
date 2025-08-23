@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" th:href="@{/icon/ikon.jpg}" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <title>Login</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="templateform">
+        <div class="register">
+            <span class="judul">Login Akun</span>
+            <form th:action="@{/login}" method="POST" th:object="${user}" class="form">
+                <input class="input" type="text" th:field="*{username}" placeholder="Username" required>
+                <input class="input" type="password" th:field="*{password}" placeholder="Password" required>
+                
+                <div class="pilihan">
+                    <button class="button" type="submit">Login</button>
+                    <a href="/register" class="buttonA">Register</a>
+                </div>
+            </form>            
+        </div>
+    </div>
+</body>
+</html>

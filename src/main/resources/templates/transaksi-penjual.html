@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" th:href="@{/icon/ikon.jpg}" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <title>Transaksi Penjual</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function filterTransactions(status) {
+            $('#pendingTable').hide();
+            $('#gagalTable').hide();
+            $('#suksesTable').hide();
+
+            if (status === 'pending') {
+                $('#pendingTable').show();
+            } else if (status === 'gagal') {
+                $('#gagalTable').show();
+            } else if (status === 'sukses') {
+                $('#suksesTable').show();
+            }
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <nav>
+            <img th:src="@{/icon/ikon.jpg}" alt="logo" class="logo">
+            <span class="logo-text">Lelang hitam</span>
+        </nav>
+        <nav>
+            <a href="/beranda" class="menu">Beranda</a>
+            <a href="/lelang" class="menu">Lelang</a>
+            <a href="/barang" class="menu">Barang</a>
+            <div class="dropdown">
+                <a class="menu">Transaksi</a>
+                <div class="dropdown-content">
+                    <a href="/transaksi-penjual">Penjual</a>
+                    <a href="/transaksi-pembeli">Pembeli</a>
+                </div>
+            </div>
+            <a href="/chat" class="menu">Chat</a>
+        </nav>
+        <nav>
+            <a href="/profil"><img th:src="@{${user.fotoProfil}}" alt="Foto Profil" class="foto-profil"></a>
+            <form action="/logout" method="delete">
+                <button class="button" type="submit">keluar</button>
+            </form>
+        </nav>
+    </header>
+
+    <main class="mainLelang">
+        <div class="status">
+            <h3 class="judulInformasiAkun">Transaksi Penjual</h3>
+            <select id="statusFilter" class="inputoption" onchange="filterTransactions(this.value)">
+                <option value="pending">Pending</option>
+                <option value="gagal">Gagal</option>
+                <option value="sukses">Sukses</option>
+            </select>
+
+            <div id="pendingTable" class="transaksi-table">
+                <h3 class="judulInformasiAkun">Transaksi Pending</h3>
+                <table id="barang">
+                    <thead>
+                        <tr>
+                            <th>Nama Barang</th>
+                            <th>Pembeli</th>
+                            <th>Harga</th>
+                            <th>Batas Waktu</th>
+                            <th>Status Pembayaran</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="transaksi : ${transaksiPending}">
+                            <td th:text="${transaksi.barang.namaBarang}"></td>
+                            <td th:text="${transaksi.pembeli.nama}"></td>
+                            <td th:text="${#numbers.formatDecimal(transaksi.harga, 0, 'POINT', 0, 'COMMA')}"></td>
+                            <td th:text="${transaksi.batasWaktu}"></td>
+                            <td th:text="${transaksi.statusPembayaran}"></td>
+                            <td class="sesi-bid tengah">
+                                <a th:href="@{/cektransaksi/(id=${transaksi.id})}" class="buttonA">Detail</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="gagalTable" class="transaksi-table" style="display:none;">
+                <h3 class="judulInformasiAkun">Transaksi Gagal</h3>
+                <table id="barang">
+                    <thead>
+                        <tr>
+                            <th>Nama Barang</th>
+                            <th>Pembeli</th>
+                            <th>Harga</th>
+                            <th>Batas Waktu</th>
+                            <th>Status Pembayaran</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="transaksi : ${transaksiGagal}">
+                            <td th:text="${transaksi.barang.namaBarang}"></td>
+                            <td th:text="${transaksi.pembeli.nama}"></td>
+                            <td th:text="${#numbers.formatDecimal(transaksi.harga, 0, 'POINT', 0, 'COMMA')}"></td>
+                            <td th:text="${transaksi.batasWaktu}"></td>
+                            <td th:text="${transaksi.statusPembayaran}"></td>
+                            <td class="sesi-bid tengah">
+                                <a th:href="@{/cektransaksi/(id=${transaksi.id})}" class="buttonA">Detail</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="suksesTable" class="transaksi-table" style="display:none;">
+                <h3 class="judulInformasiAkun">Transaksi Sukses</h3>
+                <table id="barang">
+                    <thead>
+                        <tr>
+                            <th>Nama Barang</th>
+                            <th>Pembeli</th>
+                            <th>Harga</th>
+                            <th>Batas Waktu</th>
+                            <th>Status Pembayaran</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="transaksi : ${transaksiSukses}">
+                            <td th:text="${transaksi.barang.namaBarang}"></td>
+                            <td th:text="${transaksi.pembeli.nama}"></td>
+                            <td th:text="${#numbers.formatDecimal(transaksi.harga, 0, 'POINT', 0, 'COMMA')}"></td>
+                            <td th:text="${transaksi.batasWaktu}"></td>
+                            <td th:text="${transaksi.statusPembayaran}"></td>
+                            <td class="sesi-bid tengah">
+                                <a th:href="@{/cektransaksi/(id=${transaksi.id})}" class="buttonA">Detail</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        
+    </footer>
+</body>
+</html>

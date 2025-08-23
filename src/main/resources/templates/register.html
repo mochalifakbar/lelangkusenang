@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" th:href="@{/icon/ikon.jpg}" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <title>Buat akun baru</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="templateform">
+        <div class="register">
+            <span class="judul">Register Akun</span>
+            <form th:action="@{/register}" method="POST" th:object="${registerForm}" class="form">
+                <input class="input" type="text" th:field="*{user.nama}" placeholder="Nama" required>
+                <input class="input" type="email" th:field="*{user.email}" placeholder="Email" required>
+                <input class="input" type="text" th:field="*{user.username}" placeholder="Username" required>
+                <input class="input" type="date" th:field="*{user.tanggalLahir}">
+                <input class="input" type="text" th:field="*{user.nomorTelepon}" placeholder="Nomor HP" required>
+                <input class="input" type="password" th:field="*{user.password}" placeholder="Password" required>
+                
+                <select class="inputoption" id="provinsi" th:field="*{alamat.provinsi}" required>
+                    <option value="">Pilih Provinsi</option>
+                </select>
+                
+                <select class="inputoption" id="kabupaten" th:field="*{alamat.kota}" required style="display:none">
+                    <option value="">Pilih Kabupaten</option>
+                </select>
+                
+                <select class="inputoption" id="kecamatan" th:field="*{alamat.kecamatan}" required style="display:none">
+                    <option value="">Pilih Kecamatan</option>
+                </select>
+            
+                <select class="inputoption" id="kelurahan" th:field="*{alamat.desa}" required style="display:none">
+                    <option value="">Pilih Kelurahan</option>
+                </select>
+                
+                <button class="button" type="submit">Register</button>
+            </form>            
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            const API_KEY = 'c8645226-7050-554e-fc01-5d3972d8';
+            
+            $.ajax({
+                url: 'https://api.goapi.io/regional/provinsi',
+                method: 'GET',
+                headers: {
+                    'X-API-KEY': API_KEY
+                },
+                success: function(response) {
+                    let provinsi = $('#provinsi');
+                    if(response.data) {
+                        $.each(response.data, function(index, item) {
+                            provinsi.append($('<option></option>').val(item.id).text(item.name));
+                        });
+                    }
+                }
+            });
+
+            $('#provinsi').change(function() {
+                let provinsiId = $(this).val();
+                let kabupaten = $('#kabupaten');
+                
+                if(provinsiId) {
+                    kabupaten.show();
+                    kabupaten.prop('disabled', false);
+                    kabupaten.empty();
+                    kabupaten.append($('<option></option>').val('').text('Pilih Kabupaten'));
+                    
+                    $.ajax({
+                        url: `https://api.goapi.io/regional/kota?provinsi_id=${provinsiId}`,
+                        method: 'GET',
+                        headers: {
+                            'X-API-KEY': API_KEY
+                        },
+                        success: function(response) {
+                            if(response.data) {
+                                $.each(response.data, function(index, item) {
+                                    kabupaten.append($('<option></option>').val(item.id).text(item.name));
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    kabupaten.hide();
+                    $('#kecamatan').hide();
+                    $('#kelurahan').hide();
+                }
+            });
+
+            $('#kabupaten').change(function() {
+                let kabupatenId = $(this).val();
+                let kecamatan = $('#kecamatan');
+                
+                if(kabupatenId) {
+                    kecamatan.show();
+                    kecamatan.prop('disabled', false);
+                    kecamatan.empty();
+                    kecamatan.append($('<option></option>').val('').text('Pilih Kecamatan'));
+                    
+                    $.ajax({
+                        url: `https://api.goapi.io/regional/kecamatan?kota_id=${kabupatenId}`,
+                        method: 'GET',
+                        headers: {
+                            'X-API-KEY': API_KEY
+                        },
+                        success: function(response) {
+                            if(response.data) {
+                                $.each(response.data, function(index, item) {
+                                    kecamatan.append($('<option></option>').val(item.id).text(item.name));
+                                });
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                } else {
+                    kecamatan.hide();
+                    $('#kelurahan').hide();
+                }
+            });
+
+            $('#kecamatan').change(function() {
+                let kecamatanId = $(this).val();
+                let kelurahan = $('#kelurahan');
+                
+                if(kecamatanId) {
+                    kelurahan.show();
+                    kelurahan.prop('disabled', false);
+                    kelurahan.empty();
+                    kelurahan.append($('<option></option>').val('').text('Pilih Kelurahan'));
+                    
+                    $.ajax({
+                        url: `https://api.goapi.io/regional/kelurahan?kecamatan_id=${kecamatanId}`,
+                        method: 'GET',
+                        headers: {
+                            'X-API-KEY': API_KEY
+                        },
+                        success: function(response) {
+                            if(response.data) {
+                                $.each(response.data, function(index, item) {
+                                    kelurahan.append($('<option></option>').val(item.id).text(item.name));
+                                });
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                } else {
+                    kelurahan.hide();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

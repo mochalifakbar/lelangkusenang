@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" th:href="@{/icon/ikon.jpg}" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <title>Chat Detail</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <img th:src="@{/icon/ikon.jpg}" alt="logo" class="logo">
+            <span class="logo-text">Lelang Hitam</span>
+        </nav>
+        <nav>
+            <a href="/beranda" class="menu">Beranda</a>
+            <a href="/lelang" class="menu">Lelang</a>
+            <a href="/barang" class="menu">Barang</a>
+            <div class="dropdown">
+                <a class="menu">Transaksi</a>
+                <div class="dropdown-content">
+                    <a href="/transaksi-penjual">Penjual</a>
+                    <a href="/transaksi-pembeli">Pembeli</a>
+                </div>
+            </div>
+            <a href="/chat" class="menu">Chat</a>
+        </nav>
+        <nav>
+            <a href="/profil"><img th:src="@{${user.fotoProfil}}" alt="Foto Profil" class="foto-profil"></a>
+            <form action="/logout" method="delete">
+                <button class="button" type="submit">Keluar</button>
+            </form>
+        </nav>
+    </header>
+    <main class="main">
+        <div class="templateChat">
+            <div class="tampilanBarang">
+                <div class="informasiChat">
+                    <div id="chatMessages">
+                        <h3 class="judulInformasiAkun">Pesan: </h3>
+                        <div th:each="message : ${chat.messages}" class="message">
+                            <div th:if="${message.pengirim.nama == user.nama}" class="displayinline">
+                                <strong th:text="${message.pengirim.nama}" class="user2-message"></strong>
+                                <strong class="user2-message">:</strong>
+                            </div>
+                            <div th:unless="${message.pengirim.nama == user.nama}" class="displayinline">
+                                <strong th:text="${message.pengirim.nama}" class="user1-message"></strong>
+                                <strong class="user1-message">:</strong> 
+                            </div>
+                            <span th:text="${message.pesan}" class="chat-message"></span>
+                            <small th:text="${#temporals.format(message.waktu, 'HH:mm:ss')}" class="time-message"></small>
+                        </div>
+                    </div>
+                    <div class="chat-list margin">
+                        <input type="text" id="messageInput" placeholder="Type your message" class="input">
+                        <button id="sendMessage" class="button">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const chatId = /*[[${chat.id}]]*/ null;
+        const currentUserId = /*[[${user.id}]]*/ null;
+        const currentUserName = /*[[${user.nama}]]*/ '';
+
+        let chatSocket;
+
+        function initWebSocket() {
+            chatSocket = new WebSocket(`ws://localhost:8080/chat/${chatId}`);
+
+            chatSocket.onopen = function(event) {
+                console.log('WebSocket connection established');
+            };
+
+            chatSocket.onmessage = function(event) {
+                const messageData = JSON.parse(event.data);
+                appendMessage(messageData);
+            };
+
+            chatSocket.onclose = function(event) {
+                console.log('WebSocket connection closed');
+                setTimeout(initWebSocket, 5000); // Reconnect after 5 seconds
+            };
+        }
+
+        function appendMessage(messageData) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            let warna = messageData.senderName != currentUserName ? 'user1-message' : 'user2-message';
+            messageElement.innerHTML = `
+                <strong class="${warna}">${messageData.senderName}</strong><strong class="${warna}">:</strong> 
+                <span class="chat-message">${messageData.message}</span>
+                <small class="time-message">${new Date().toLocaleTimeString()}</small>
+            `;
+            document.getElementById('chatMessages').appendChild(messageElement);
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        document.getElementById('sendMessage').addEventListener('click', sendMessage);
+        document.getElementById('messageInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+
+            if (message && chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+                const messageData = {
+                    chatId: chatId,
+                    senderId: currentUserId,
+                    message: message
+                };
+
+                chatSocket.send(JSON.stringify(messageData));
+                messageInput.value = '';
+            }
+        }
+
+        // Initialize WebSocket on page load
+        initWebSocket();
+        /*]]>*/
+    </script>
+</body>
+</html>

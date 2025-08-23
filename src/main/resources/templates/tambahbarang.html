@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" th:href="@{/icon/ikon.jpg}" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <title>tambah barang</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <img th:src="@{/icon/ikon.jpg}" alt="logo" class="logo">
+            <span class="logo-text">Lelang hitam</span>
+        </nav>
+        <nav>
+            <a href="/beranda" class="menu">Beranda</a>
+            <a href="/lelang" class="menu">Lelang</a>
+            <a href="/barang" class="menu">Barang</a>
+            <div class="dropdown">
+                <a class="menu">Transaksi</a>
+                <div class="dropdown-content">
+                <a href="/transaksi-penjual">Penjual</a>
+                <a href="/transaksi-pembeli">Pembeli</a>
+                </div>
+            </div>
+            <a href="/chat" class="menu">Chat</a>
+        </nav>
+        <nav>
+            <a href="/profil"><img th:src="@{${user.fotoProfil}}" alt="Foto Profil" class="foto-profil"></a>
+            <form action="/logout" method="delete">
+                <button class="button" type="submit">keluar</button>
+            </form>
+        </nav>
+    </header>
+    <main>
+        <div class="templateform">
+            <div class="register">
+                <span class="judul">Buat Barang yang ingin dilelang</span>
+                <form th:action="@{/tambahbarang}" method="POST" th:object="${barang}" class="form" enctype="multipart/form-data">
+                    <input class="input" type="text" th:field="*{namaBarang}" placeholder="Masukkan Nama Barang" required>
+                    <textarea class="input" th:field="*{deskripsiBarang}" required placeholder="Masukkan deskripsi barang"></textarea>
+                    <input class="input" type="number" th:field="*{batasHarga}" placeholder="batas harga" required>
+                    <label for="file" class="labelFoto">Masukkan foto barang</label>
+                    <input type="file" name="file" id="file" class="input" required>
+                    <input class="input" type="number" th:field="*{hargaAwal}" placeholder="harga awal lelang" required>
+                    <input class="input" type="number" th:field="*{kelipatanBid}" placeholder="kelipatan bid" required>
+                    <input class="input" type="datetime-local" th:field="*{batasWaktu}" required>
+                    
+                    <button class="button" type="submit">Submit barang</button>
+                </form>            
+            </div>
+        </div>
+    </main>
+    <footer>
+
+    </footer>
+</body>
+</html>
