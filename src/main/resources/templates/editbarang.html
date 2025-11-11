@@ -4,60 +4,207 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" th:href="@{/icon/ikon.jpg}" type="image/x-icon">
-    <link rel="stylesheet" th:href="@{/css/main.css}">
-    <title>Edit barang</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Edit Barang</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/autonumeric@4.6.0/dist/autoNumeric.min.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Ubuntu', 'sans-serif'],
+            },
+          },
+        },
+      }
+    </script>
 </head>
-<body>
-    <header>
-        <nav>
-            <img th:src="@{/icon/ikon.jpg}" alt="logo" class="logo">
-            <span class="logo-text">Lelang hitam</span>
-        </nav>
-        <nav>
-            <a href="/beranda" class="menu">Beranda</a>
-            <a href="/lelang" class="menu">Lelang</a>
-            <a href="/barang" class="menu">Barang</a>
-            <div class="dropdown">
-                <a class="menu">Transaksi</a>
-                <div class="dropdown-content">
-                <a href="/transaksi-penjual">Penjual</a>
-                <a href="/transaksi-pembeli">Pembeli</a>
-                </div>
+<body class="bg-slate-900 font-sans text-gray-200">
+    <header class="bg-slate-900 sticky top-0 z-50 shadow-md shadow-white/15">
+        <div class="container mx-auto flex justify-between items-center p-4 text-white">
+            <div class="flex items-center gap-3">
+                <a href="/beranda" class="flex items-center gap-3">
+                    <img th:src="@{/icon/ikon.jpg}" alt="logo" class="w-12 h-12 rounded-full">
+                    <span class="text-xl font-bold tracking-wider">LelangkuSenang</span>
+                </a>
             </div>
-            <a href="/chat" class="menu">Chat</a>
-        </nav>
-        <nav>
-            <a href="/profil"><img th:src="@{${user.fotoProfil}}" alt="Foto Profil" class="foto-profil"></a>
-            <form action="/logout" method="delete">
-                <button class="button" type="submit">keluar</button>
-            </form>
-        </nav>
-    </header>
-    <main>
-        <div class="main">
-            <div class="templateform">
-                <div class="register">
-                    <div class="informasiAkun">
-                        <img th:src="@{${barang.fotoBarang}}" class="profil-foto">
-                        <form th:action="@{/editbarang/}" method="POST" th:object="${barang}" class="formInformasiAkun" enctype="multipart/form-data">
-                            <input type="hidden" th:field="*{id}">
-                            <input class="input" type="text" th:field="*{namaBarang}" placeholder="Masukkan Nama Barang" required>
-                            <textarea class="input" th:field="*{deskripsiBarang}" required placeholder="Masukkan deskripsi barang"></textarea>
-                            <input class="input" type="number" th:field="*{batasHarga}" placeholder="batas harga" required>
-                            <label for="file" class="labelFoto">Masukkan foto barang</label>
-                            <input type="file" name="file" id="file" class="input">
-                            <input class="input" type="number" th:field="*{hargaAwal}" placeholder="harga awal lelang" required>
-                            <input class="input" type="number" th:field="*{kelipatanBid}" placeholder="kelipatan bid" required>
-                     
-                            <button class="button" type="submit">Simpan</button>
-                        </form>
+            <nav class="hidden md:flex items-center gap-6 text-md font-medium text-slate-300">
+                <a href="/beranda" class="hover:text-indigo-400 transition-colors duration-300">Beranda</a>
+                <a href="/lelang" class="hover:text-indigo-400 transition-colors duration-300">Lelang</a>
+                <a href="/barang" class="hover:text-indigo-400 transition-colors duration-300">Barang</a>
+                <div id="desktop-transaksi-dropdown" class="relative">
+                    <a href="#" class="cursor-pointer flex items-center gap-1 hover:text-indigo-400 transition-colors duration-300">
+                        Transaksi <i class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+                    </a>
+                    <div class="absolute hidden bg-slate-700 text-white mt-2 rounded-md shadow-lg w-40 z-10">
+                        <a href="/transaksi-penjual" class="block px-4 py-2 hover:bg-slate-600 rounded-t-md">Sebagai Penjual</a>
+                        <a href="/transaksi-pembeli" class="block px-4 py-2 hover:bg-slate-600 rounded-b-md">Sebagai Pembeli</a>
                     </div>
                 </div>
+                <a href="/chat" class="hover:text-indigo-400 transition-colors duration-300">Chat</a>
+            </nav>
+            <div class="hidden md:flex items-center gap-4">
+                <a href="/profil">
+                    <img th:src="@{${user.fotoProfil}}" alt="Foto Profil" class="w-11 h-11 rounded-full object-cover border-2 border-slate-500 hover:border-indigo-400 transition-all duration-300">
+                </a>
+                <form th:action="@{/logout}" method="POST">
+                     <button type="submit" class="bg-indigo-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-indigo-500 transition-colors duration-300">
+                         Keluar
+                     </button>
+                </form>
             </div>
-        </div>       
-    </main>
-    <footer>
+            <div class="md:hidden">
+                <button id="hamburger-button" class="text-white focus:outline-none z-20 relative">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-800 text-white p-4">
+            <nav class="flex flex-col gap-4 text-lg">
+                <a href="/beranda" class="hover:text-indigo-400">Beranda</a>
+                <a href="/lelang" class="hover:text-indigo-400">Lelang</a>
+                <a href="/barang" class="hover:text-indigo-400">Barang</a>
+                <div>
+                    <button id="mobile-transaksi-button" class="w-full text-left flex justify-between items-center hover:text-indigo-400">
+                        <span>Transaksi</span>
+                        <i class="fas fa-chevron-down text-sm transition-transform duration-300"></i>
+                    </button>
+                    <div id="mobile-transaksi-submenu" class="hidden pl-4 pt-2 space-y-2">
+                        <a href="/transaksi-penjual" class="hover:text-indigo-400 block">- Sebagai Penjual</a>
+                        <a href="/transaksi-pembeli" class="hover:text-indigo-400 block">- Sebagai Pembeli</a>
+                    </div>
+                </div>
+                <a href="/chat" class="hover:text-indigo-400">Chat</a>
+                <hr class="border-slate-600"/>
+                <div class="flex items-center justify-between">
+                     <a href="/profil" class="flex items-center gap-3">
+                        <img th:src="@{${user.fotoProfil}}" alt="Foto Profil" class="w-11 h-11 rounded-full object-cover border-2 border-slate-500">
+                        <span>Lihat Profil</span>
+                    </a>
+                    <form th:action="@{/logout}" method="POST">
+                         <button type="submit" class="bg-red-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-red-500">
+                             Keluar
+                         </button>
+                    </form>
+                </div>
+            </nav>
+        </div>
+    </header>
 
-    </footer>
+    <main class="flex items-center justify-center p-4">
+        <div class="w-full max-w-4xl bg-slate-800/70 backdrop-blur-sm rounded-2xl p-8 shadow-2xl shadow-black/30">
+            <h1 class="text-3xl font-bold text-center text-white mb-8">
+                Edit Detail Barang
+            </h1>
+
+            <form th:action="@{/editbarang}" method="POST" th:object="${barang}" enctype="multipart/form-data" class="flex flex-col lg:flex-row gap-8">
+                
+                <input type="hidden" th:field="*{id}">
+
+                <div class="flex flex-col items-center lg:items-start flex-shrink-0">
+                    <label for="file" class="relative group cursor-pointer w-[225px] h-[225px]">
+                        <img th:src="@{${barang.fotoBarang}}" id="fotoPreview" class="w-full h-full rounded-2xl object-cover shadow-lg">
+                        <div class="absolute inset-0 bg-black/50 rounded-2xl flex justify-center items-center text-white text-5xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                    </label>
+                    <input type="file" name="file" id="file" class="hidden"/>
+                    <p class="text-sm text-gray-400 mt-2 text-center lg:text-left">Klik foto untuk mengganti</p>
+                </div>
+
+                <div class="w-full flex flex-col gap-5">
+                    <div class="flex flex-col gap-2">
+                        <label for="namaBarang" class="font-semibold text-gray-300">Nama Barang</label>
+                        <input id="namaBarang" type="text" th:field="*{namaBarang}" required class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <label for="deskripsiBarang" class="font-semibold text-gray-300">Deskripsi Barang</label>
+                        <textarea id="deskripsiBarang" th:field="*{deskripsiBarang}" required rows="4" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col gap-2">
+                            <label for="hargaAwal" class="font-semibold text-gray-300">Harga Awal (Rp)</label>
+                            <input id="hargaAwal" type="text" th:field="*{hargaAwal}" placeholder="Rp. 100.000" required inputmode="numeric" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label for="batasHarga" class="font-semibold text-gray-300">Harga Beli Sekarang (Rp)</label>
+                            <input id="batasHarga" type="text" th:field="*{batasHarga}" placeholder="Rp. 500.000" required inputmode="numeric" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <label for="kelipatanBid" class="font-semibold text-gray-300">Kelipatan Penawaran / Bid (Rp)</label>
+                        <input id="kelipatanBid" type="text" th:field="*{kelipatanBid}" placeholder="Rp. 10.000" required inputmode="numeric" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
+                    </div>
+                    
+                    <div class="mt-4 flex justify-end">
+                        <button type="submit" class="bg-indigo-600 text-white text-lg font-bold py-3 px-8 rounded-lg hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-indigo-500 transition duration-300">
+                            Simpan Perubahan
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        $(document).ready(function() {
+            const hamburgerButton = $('#hamburger-button');
+            const mobileMenu = $('#mobile-menu');
+
+            hamburgerButton.click(function(event) {
+                event.stopPropagation();
+                mobileMenu.slideToggle();
+            });
+
+            $(document).click(function(event) {
+                if (mobileMenu.is(':visible') && !mobileMenu.is(event.target) && mobileMenu.has(event.target).length === 0) {
+                    mobileMenu.slideUp();
+                }
+            });
+
+            const dropdown = $('#desktop-transaksi-dropdown');
+            let timeout;
+            dropdown.on('mouseenter', function() {
+                clearTimeout(timeout);
+                $(this).find('.absolute').removeClass('hidden');
+                $(this).find('.fa-chevron-down').addClass('rotate-180');
+            });
+            dropdown.on('mouseleave', function() {
+                timeout = setTimeout(function() {
+                    dropdown.find('.absolute').addClass('hidden');
+                    dropdown.find('.fa-chevron-down').removeClass('rotate-180');
+                }, 200);
+            });
+
+            $('#mobile-transaksi-button').click(function() {
+                $('#mobile-transaksi-submenu').slideToggle();
+                $(this).find('i').toggleClass('rotate-180');
+            });
+
+            // Script untuk pratinjau gambar
+            $('#file').change(function() {
+                const reader = new FileReader();
+                reader.onload = function(e) { $('#fotoPreview').attr('src', e.target.result); }
+                reader.readAsDataURL(this.files[0]);
+            });
+
+            const rupiahOptions = {
+                digitGroupSeparator: '.',
+                decimalCharacter: ',',
+                currencySymbol: 'Rp. ',
+                decimalPlaces: 0,
+                unformatOnSubmit: true
+            };
+
+            new AutoNumeric('#hargaAwal', rupiahOptions);
+            new AutoNumeric('#batasHarga', rupiahOptions);
+            new AutoNumeric('#kelipatanBid', rupiahOptions);
+        });
+    </script>
 </body>
 </html>

@@ -4,7 +4,7 @@ server:
     include-message: always
   servlet:
     session:
-      timeout: 5m
+      timeout: 100m
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -19,3 +19,6 @@ spring:
       ddl-auto: update
     show-sql: true
     open-in-view: true
+api:
+  goapi:
+    key: 'cdeed762-e5ec-53ff-6315-9c7fc35f'

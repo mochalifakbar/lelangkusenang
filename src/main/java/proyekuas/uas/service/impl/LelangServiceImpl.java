@@ -1,5 +1,6 @@
 package proyekuas.uas.service.impl;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import proyekuas.uas.entity.Barang;
+import proyekuas.uas.entity.Barang.Status;
 import proyekuas.uas.entity.Lelang;
 import proyekuas.uas.entity.Transaksi;
 import proyekuas.uas.entity.User;
@@ -57,7 +59,7 @@ public class LelangServiceImpl implements proyekuas.uas.service.LelangService{
     }
 
     @Override
-    public void addLelang(Long id, double bid, User user) {
+    public void addLelang(Long id, BigDecimal bid, User user) {
         Barang barang = barangService.findById(id);
         Lelang lelang = new Lelang();
         lelang.setBarang(barang);
@@ -68,7 +70,7 @@ public class LelangServiceImpl implements proyekuas.uas.service.LelangService{
         barang.setHargaTertinggi(bid);
         barang.setPemenang(user);
         if(barang.getBatasHarga().equals(bid)){
-            barang.setStatus("TERJUAL");
+            barang.setStatus(Status.TERJUAL);
             barangService.updateBarang(barang);
             prosesLelangSelesai(barang);
         }else{
@@ -76,6 +78,18 @@ public class LelangServiceImpl implements proyekuas.uas.service.LelangService{
         }
         addLelang(lelang);
         barangService.updateBarang(barang);
+    }
+
+    @Override
+    public void beliSekarang(Long id, User user) {
+        Barang barang = barangService.findById(id);
+        String status = barang.getStatus().toString();
+        if(barang != null && status == null) {
+            barang.setStatus(Status.TERJUAL);
+            barang.setPemenang(user);
+            barangService.updateBarang(barang);
+            prosesLelangSelesai(barang);
+        }
     }
 
     @Override
@@ -87,5 +101,28 @@ public class LelangServiceImpl implements proyekuas.uas.service.LelangService{
        transaksi.setHarga(barang.getHargaTertinggi());
        transaksi.setWaktuPembelian(getWaktuLelangSelesai(barang));
        transaksiService.addTransaksi(transaksi);
+    }
+
+    @Override
+    public Barang mulaiLelang(Long barangId, User currentUser) {
+        Barang barang = barangService.findById(barangId);
+
+        // Validasi
+        if (barang == null || !barang.getPenjual().getId().equals(currentUser.getId()) || barang.getStatus() != Status.TERSEDIA) {
+            throw new IllegalStateException("Barang tidak valid untuk memulai lelang.");
+        }
+
+        // --- LOGIKA BARU DITAMBAHKAN DI SINI ---
+        // Atur batas waktu lelang, misalnya 7 hari dari sekarang
+        LocalDateTime sekarang = LocalDateTime.now();
+        LocalDateTime batasWaktuBaru = sekarang.plusDays(7); 
+        barang.setBatasWaktu(batasWaktuBaru);
+        
+        // Ubah status menjadi DILELANG
+        barang.setStatus(Status.DILELANG);
+
+        // Simpan perubahan ke database
+        barangService.updateBarang(barang);
+        return barang;
     }
 }

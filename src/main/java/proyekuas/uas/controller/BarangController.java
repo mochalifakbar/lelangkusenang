@@ -1,11 +1,14 @@
 package proyekuas.uas.controller;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,7 +53,7 @@ public class BarangController {
     }
     
 
-    @PostMapping("/editbarang/")
+    @PostMapping("/editbarang")
     public String editbarang(@ModelAttribute Barang barangEdit, 
                              @RequestParam("file") MultipartFile file, 
                              HttpSession session) throws IOException {
@@ -80,20 +83,46 @@ public class BarangController {
         return "redirect:/barang";
     }
 
-
     @GetMapping("/barang")
-    public String barang(HttpSession session, Model model) {
+    public String showGudangPage(
+            HttpSession session,
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size,
+            @RequestParam(name = "search", required = false) String searchKeyword,
+            @RequestParam(name = "status", required = false) String statusFilter,
+            Model model) {
+
         if(session.getAttribute("loggedUser") == null){
             return "redirect:/login";
         }
-
+        
+        // Buat objek Pageable untuk paginasi
+        PageRequest pageable = PageRequest.of(page - 1, size);
         User user = userService.findByUsername(session.getAttribute("loggedUser").toString());
-        List<Barang> barang = barangService.findByPenjualId(user.getId());
-
+        
+        
+        
+        Page<Barang> gudangPage = barangService.findPaginatedAndFiltered(searchKeyword, statusFilter, user.getId(), pageable);
+        
+        // --- CONTOH DATA DUMMY (Ganti dengan logic service Anda) ---
+        // List<Barang> allItems = ...; // Ambil semua data dari database
+        // Lalu filter di sini atau lebih baik di query database
+        // Page<Barang> gudangPage = ...;
+        // -----------------------------------------------------------
         model.addAttribute("user", user);
-        model.addAttribute("barang", barang);
+        model.addAttribute("gudangItems", gudangPage.getContent());
+        model.addAttribute("currentPage", gudangPage.getNumber() + 1);
+        model.addAttribute("totalPages", gudangPage.getTotalPages());
+        model.addAttribute("totalItems", gudangPage.getTotalElements());
 
-        return "barang";
+        // PENTING: Kembalikan nilai filter ke view agar input tetap terisi
+        model.addAttribute("currentSearch", searchKeyword);
+        model.addAttribute("currentStatus", statusFilter);
+        
+        // Asumsi gudangItems adalah nama variabel di Thymeleaf Anda
+        // model.addAttribute("gudangItems", ...); 
+
+        return "barang"; // nama file HTML Anda (tanpa .html)
     }
 
 
@@ -112,7 +141,7 @@ public class BarangController {
     }
 
 
-    @GetMapping("/editbarang/")
+    @GetMapping("/editbarang")
     public String editbarang(@RequestParam("id") Long id, HttpSession session, Model model) {
         if(session.getAttribute("loggedUser") == null){
             return "redirect:/login";
@@ -136,15 +165,15 @@ public class BarangController {
             return "redirect:/login";
         }
 
-        List<Double> daftarBid = new ArrayList<>();
+        List<BigDecimal> daftarBid = new ArrayList<>();
         User user = userService.findByUsername(session.getAttribute("loggedUser").toString());
         Barang barang = barangService.findById(id);
         List<Lelang> lelang = lelangService.getAllLelang(id);
         List<Lelang> lelangModifiable = new ArrayList<>(lelang);
         Collections.reverse(lelangModifiable);
 
-        for (double bid = barang.getHargaAwal(); bid <= barang.getBatasHarga(); bid += barang.getKelipatanBid()) {
-            if(barang.getHargaTertinggi() != null && bid <= barang.getHargaTertinggi()){
+        for (BigDecimal bid = barang.getHargaAwal(); bid.compareTo(barang.getBatasHarga()) <= 0; bid = bid.add(barang.getKelipatanBid())) {
+            if(barang.getHargaTertinggi() != null && bid.compareTo(barang.getHargaTertinggi()) <= 0){
                 continue;
             }
             daftarBid.add(bid);

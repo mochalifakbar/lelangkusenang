@@ -4,198 +4,251 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" th:href="@{/icon/ikon.jpg}" type="image/x-icon">
-    <link rel="stylesheet" th:href="@{/css/main.css}">
-    <title>Profil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Profil Pengguna</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Ubuntu', 'sans-serif'],
+            },
+          },
+        },
+      }
+    </script>
 </head>
-<body>
-    <header>
-        <nav>
-            <img th:src="@{/icon/ikon.jpg}" alt="logo" class="logo">
-            <span class="logo-text">Lelang hitam</span>
-        </nav>
-        <nav>
-            <a href="/beranda" class="menu">Beranda</a>
-            <a href="/lelang" class="menu">Lelang</a>
-            <a href="/barang" class="menu">Barang</a>
-            <div class="dropdown">
-                <a class="menu">Transaksi</a>
-                <div class="dropdown-content">
-                <a href="/transaksi-penjual">Penjual</a>
-                <a href="/transaksi-pembeli">Pembeli</a>
-                </div>
+<body class="bg-slate-900 font-sans">
+    <header class="bg-slate-800/80 backdrop-blur-lg sticky top-0 z-50 shadow-lg shadow-black/20">
+        <div class="container mx-auto flex justify-between items-center p-4 text-white">
+            <div class="flex items-center gap-3">
+                <img th:src="@{/icon/ikon.jpg}" alt="logo" class="w-12 h-12 rounded-full">
+                <span class="text-xl font-bold tracking-wider">LelangkuSenang</span>
             </div>
-            <a href="/chat" class="menu">Chat</a>
-        </nav>
-        <nav>
-            <a href="/profil"><img th:src="@{${userAtribute.user.fotoProfil}}" alt="Foto Profil" class="foto-profil"></a>
-            <form action="/logout" method="delete">
-                <button class="button" type="submit">keluar</button>
-            </form>
-        </nav>
-    </header>
-    <main>
-        <div class="main">
-            <div class="templateform">
-                <div class="register">
-                    <div class="informasiAkun">
-                        <img th:src="@{${userAtribute.user.fotoProfil}}" class="profil-foto">
-                        <form th:action="@{/profil}" method="POST" th:object="${userAtribute}" class="formInformasiAkun" enctype="multipart/form-data">
-                            <span class="judulInformasiAkun">Profil</span>
-                            <input class="input" type="text" th:field="*{user.nama}" placeholder="Nama" required>
-                            <input class="input" type="email" th:field="*{user.email}" placeholder="Email" required>
-                            <input class="input" type="text" th:field="*{user.username}" placeholder="Username" required readonly>
-                            <input class="input" type="date" th:field="*{user.tanggalLahir}">
-                            <input class="input" type="text" th:field="*{user.nomorTelepon}" placeholder="Nomor HP" required>
-                            <input type="file" name="file" class="input"/>
-                            <select id="provinsi" th:field="*{alamat.provinsi}" required class="inputoption"></select>
-                            <select id="kabupaten" th:field="*{alamat.kota}" required class="inputoption"></select>
-                            <select id="kecamatan" th:field="*{alamat.kecamatan}" required class="inputoption"> </select>
-                            <select id="kelurahan" th:field="*{alamat.desa}" required class="inputoption"></select>
-                            <textarea th:field="*{alamat.detail}" placeholder="detail alamat" class="input"></textarea>
-                            <button class="button" type="submit">Simpan</button>
-                        </form>
+
+            <nav class="hidden md:flex items-center gap-6 text-md font-medium text-slate-300">
+                <a href="/beranda" class="hover:text-indigo-400 transition-colors duration-300">Beranda</a>
+                <a href="/lelang" class="hover:text-indigo-400 transition-colors duration-300">Lelang</a>
+                <a href="/barang" class="hover:text-indigo-400 transition-colors duration-300">Barang</a>
+                <div class="relative group">
+                    <a href="#" class="cursor-pointer flex items-center gap-1 hover:text-indigo-400 transition-colors duration-300">
+                        Transaksi <i class="fas fa-chevron-down text-xs"></i>
+                    </a>
+                    <div class="absolute hidden group-hover:block bg-slate-700 text-white mt-2 rounded-md shadow-lg w-40 z-10">
+                        <a href="/transaksi-penjual" class="block px-4 py-2 hover:bg-slate-600 rounded-t-md">Sebagai Penjual</a>
+                        <a href="/transaksi-pembeli" class="block px-4 py-2 hover:bg-slate-600 rounded-b-md">Sebagai Pembeli</a>
                     </div>
                 </div>
+                <a href="/chat" class="hover:text-indigo-400 transition-colors duration-300">Chat</a>
+            </nav>
+
+            <div class="hidden md:flex items-center gap-4">
+                <a href="/profil">
+                    <img th:src="@{${userAtribute.user.fotoProfil}}" alt="Foto Profil" class="w-11 h-11 rounded-full object-cover border-2 border-slate-500 hover:border-indigo-400 transition-all duration-300">
+                </a>
+                <form th:action="@{/logout}" method="POST">
+                     <button type="submit" class="bg-indigo-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-indigo-500 transition-colors duration-300">
+                         Keluar
+                     </button>
+                </form>
             </div>
-        </div>       
-    </main>
-    <footer>
-
-    </footer>
-    <script>
-        $(document).ready(function() {
-            const API_KEY = 'c8645226-7050-554e-fc01-5d3972d8';
-            let selectedProvinsiId = `[[${userAtribute.alamat.provinsi}]]`;
-            let selectedKabupatenId = `[[${userAtribute.alamat.kota}]]`;
-            let selectedKecamatanId = `[[${userAtribute.alamat.kecamatan}]]`;
-            let selectedKelurahanId = `[[${userAtribute.alamat.desa}]]`;
-
-            $.ajax({
-                url: 'https://api.goapi.io/regional/provinsi',
-                method: 'GET',
-                headers: { 'X-API-KEY': API_KEY },
-                success: function(response) {
-                    let provinsi = $('#provinsi');
-                    provinsi.empty();
-                    provinsi.append($('<option></option>').val('').text('Pilih Provinsi'));
             
-                    if(response.data) {
-                        $.each(response.data, function(index, item) {
-                            let option = $('<option></option>').val(item.id).text(item.name);
-                            if(item.id == selectedProvinsiId) {
-                                option.prop('selected', true);
-                                loadKabupaten(item.id); 
+            <div class="md:hidden">
+                <button id="hamburger-button" class="text-white focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-800 text-white p-4">
+            <nav class="flex flex-col gap-4 text-lg">
+                <a href="/beranda" class="hover:text-indigo-400">Beranda</a>
+                <a href="/lelang" class="hover:text-indigo-400">Lelang</a>
+                <a href="/barang" class="hover:text-indigo-400">Barang</a>
+                <a href="/transaksi-penjual" class="hover:text-indigo-400 pl-4">- Transaksi Penjual</a>
+                <a href="/transaksi-pembeli" class="hover:text-indigo-400 pl-4">- Transaksi Pembeli</a>
+                <a href="/chat" class="hover:text-indigo-400">Chat</a>
+                <hr class="border-slate-600"/>
+                <div class="flex items-center justify-between">
+                     <a href="/profil" class="flex items-center gap-3">
+                        <img th:src="@{${userAtribute.user.fotoProfil}}" alt="Foto Profil" class="w-11 h-11 rounded-full object-cover border-2 border-slate-500">
+                        <span>Lihat Profil</span>
+                    </a>
+                    <form th:action="@{/logout}" method="POST">
+                         <button type="submit" class="bg-red-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-red-500">
+                             Keluar
+                         </button>
+                    </form>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="min-h-screen flex items-center justify-center p-4 text-gray-200">
+        <div class="w-full max-w-6xl bg-slate-800/70 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
+            <form th:action="@{/profil}" method="POST" th:object="${userAtribute}" enctype="multipart/form-data" class="flex flex-col lg:flex-row gap-8">
+                
+                <div class="flex flex-col items-center lg:items-start flex-shrink-0">
+                    <h2 class="text-2xl font-bold text-white mb-4">Foto Profil</h2>
+                    <label for="fotoProfilInput" class="relative group cursor-pointer w-[225px] h-[225px]">
+                        <img th:src="@{${userAtribute.user.fotoProfil}}" id="profilFotoPreview" class="w-full h-full rounded-2xl object-cover shadow-lg">
+                        <div class="absolute inset-0 bg-black/50 rounded-2xl flex justify-center items-center text-white text-5xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                    </label>
+                    <input type="file" name="file" id="fotoProfilInput" accept="image/*" class="hidden"/>
+                    <p class="text-sm text-gray-400 mt-2 text">Klik foto untuk mengganti</p>
+                </div>
+
+                <div class="w-full">
+                    <h2 class="text-2xl font-bold text-white mb-4 text-center">Informasi Akun</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                        
+                        <div class="flex flex-col gap-2">
+                            <label for="nama" class="font-semibold text-gray-300">Nama Lengkap</label>
+                            <input id="nama" type="text" th:field="*{user.nama}" required class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300 w-full">
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label for="email" class="font-semibold text-gray-300">Email</label>
+                            <input id="email" type="email" th:field="*{user.email}" required class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300 w-full">
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label for="username" class="font-semibold text-gray-300">Username</label>
+                            <input id="username" type="text" th:field="*{user.username}" readonly class="bg-slate-600 border border-slate-500 rounded-lg px-4 py-3 text-gray-400 cursor-not-allowed w-full">
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label for="tanggalLahir" class="font-semibold text-gray-300">Tanggal Lahir</label>
+                            <input id="tanggalLahir" type="date" th:field="*{user.tanggalLahir}" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300 w-full">
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label for="nomorTelepon" class="font-semibold text-gray-300">Nomor HP</label>
+                            <input id="nomorTelepon" type="text" th:field="*{user.nomorTelepon}" required class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300 w-full">
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <div class="flex items-center gap-2"><label for="provinsi" class="font-semibold">Provinsi</label><div id="provinsi-spinner" class="w-5 h-5 border-2 border-dashed rounded-full animate-spin"></div></div>
+                            <select id="provinsi" th:field="*{alamat.provinsi}" required class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition w-full"></select>
+                        </div>
+                         <div class="flex flex-col gap-2">
+                            <div class="flex items-center gap-2"><label for="kabupaten" class="font-semibold">Kabupaten/Kota</label><div id="kabupaten-spinner" class="hidden w-5 h-5 border-2 border-dashed rounded-full animate-spin"></div></div>
+                            <select id="kabupaten" th:field="*{alamat.kota}" required class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition w-full"></select>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <div class="flex items-center gap-2"><label for="kecamatan" class="font-semibold">Kecamatan</label><div id="kecamatan-spinner" class="hidden w-5 h-5 border-2 border-dashed rounded-full animate-spin"></div></div>
+                            <select id="kecamatan" th:field="*{alamat.kecamatan}" required class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition w-full"></select>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <div class="flex items-center gap-2"><label for="kelurahan" class="font-semibold">Kelurahan/Desa</label><div id="kelurahan-spinner" class="hidden w-5 h-5 border-2 border-dashed rounded-full animate-spin"></div></div>
+                            <select id="kelurahan" th:field="*{alamat.desa}" required class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition w-full"></select>
+                        </div>
+                        <div class="flex flex-col gap-2 md:col-span-2">
+                            <label for="detail" class="font-semibold text-gray-300">Detail Alamat</label>
+                            <textarea id="detail" th:field="*{alamat.detail}" placeholder="Contoh: Jl. Merdeka No. 17" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300 w-full"></textarea>
+                        </div>
+                    </div>
+                    <div class="mt-8 flex justify-end">
+                        <button type="submit" class="bg-indigo-600 text-white text-lg font-bold py-3 px-6 rounded-lg hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-indigo-500 transition duration-300">
+                            Simpan Perubahan
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script th:inline="javascript">
+        $(document).ready(function() {
+            $('#hamburger-button').click(function() {
+                $('#mobile-menu').slideToggle();
+            });
+
+
+            $('#fotoProfilInput').change(function() {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#profilFotoPreview').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(this.files[0]);
+            });
+
+            const selectedAddress = {
+                provinsi: null,
+                kabupaten: null,
+                kecamatan: null,
+                kelurahan: null
+            };
+            const elements = {
+                provinsi: { dropdown: $('#provinsi'), spinner: $('#provinsi-spinner') },
+                kabupaten: { dropdown: $('#kabupaten'), spinner: $('#kabupaten-spinner') },
+                kecamatan: { dropdown: $('#kecamatan'), spinner: $('#kecamatan-spinner') },
+                kelurahan: { dropdown: $('#kelurahan'), spinner: $('#kelurahan-spinner') }
+            };
+
+            function initializeAddress() {
+                loadAndSelect({ type: 'provinsi' }, elements.provinsi, selectedAddress.provinsi, () => {
+                    if (selectedAddress.provinsi) {
+                        loadAndSelect({ type: 'kota', provinsi_id: selectedAddress.provinsi }, elements.kabupaten, selectedAddress.kabupaten, () => {
+                            if (selectedAddress.kabupaten) {
+                                loadAndSelect({ type: 'kecamatan', kota_id: selectedAddress.kabupaten }, elements.kecamatan, selectedAddress.kecamatan, () => {
+                                    if (selectedAddress.kecamatan) {
+                                        loadAndSelect({ type: 'kelurahan', kecamatan_id: selectedAddress.kecamatan }, elements.kelurahan, selectedAddress.kelurahan);
+                                    }
+                                });
                             }
-                            provinsi.append(option);
                         });
                     }
-                }
-            });
+                });
+            }
 
-            $('#provinsi').change(function() {
-                let provinsiId = $(this).val();
-                if (provinsiId) {
-                    loadKabupaten(provinsiId);
-                } else {
-                    $('#kabupaten').hide();
-                    $('#kecamatan').hide();
-                    $('#kelurahan').hide();
-                }
-            });
-
-            function loadKabupaten(provinsiId) {
+            function loadAndSelect(params, element, selectedId, callback) {
+                element.spinner.removeClass('hidden');
+                element.dropdown.empty().append($('<option></option>').val('').text('Memuat...'));
                 $.ajax({
-                    url: `https://api.goapi.io/regional/kota?provinsi_id=${provinsiId}`,
+                    url: '/api/regional',
                     method: 'GET',
-                    headers: { 'X-API-KEY': API_KEY },
+                    data: params,
                     success: function(response) {
-                        let kabupaten = $('#kabupaten');
-                        kabupaten.empty();
-                        kabupaten.append($('<option></option>').val('').text('Pilih Kabupaten'));
-                        kabupaten.show();
-
-                        if (response.data) {
-                            $.each(response.data, function(index, item) {
-                                let option = $('<option></option>').val(item.id).text(item.name);
-                                if (item.id == selectedKabupatenId) {
-                                    option.prop('selected', true);
-                                    loadKecamatan(item.id); 
-                                }
-                                kabupaten.append(option);
-                            });
-                        }
+                        element.dropdown.empty().append($('<option></option>').val('').text('Pilih ' + params.type));
+                        try {
+                            const responseData = JSON.parse(response);
+                            if (responseData.data) {
+                                $.each(responseData.data, function(index, item) {
+                                    const option = $('<option></option>').val(item.id).text(item.name);
+                                    if (item.id == selectedId) option.prop('selected', true);
+                                    element.dropdown.append(option);
+                                });
+                            }
+                        } catch (e) { console.error("Gagal parsing JSON:", e); }
+                        element.spinner.addClass('hidden');
+                        if (callback) callback();
+                    },
+                    error: function() {
+                        element.spinner.addClass('hidden');
+                        element.dropdown.empty().append($('<option></option>').val('').text('Gagal Memuat'));
+                        if (callback) callback();
                     }
                 });
             }
 
-            $('#kabupaten').change(function() {
-                let kabupatenId = $(this).val();
-                if (kabupatenId) {
-                    loadKecamatan(kabupatenId);
-                } else {
-                    $('#kecamatan').hide();
-                    $('#kelurahan').hide();
-                }
+            elements.provinsi.dropdown.change(function() {
+                const id = $(this).val();
+                elements.kabupaten.dropdown.empty(); elements.kecamatan.dropdown.empty(); elements.kelurahan.dropdown.empty();
+                if (id) loadAndSelect({ type: 'kota', provinsi_id: id }, elements.kabupaten, null);
+            });
+            elements.kabupaten.dropdown.change(function() {
+                const id = $(this).val();
+                elements.kecamatan.dropdown.empty(); elements.kelurahan.dropdown.empty();
+                if (id) loadAndSelect({ type: 'kecamatan', kota_id: id }, elements.kecamatan, null);
+            });
+            elements.kecamatan.dropdown.change(function() {
+                const id = $(this).val();
+                elements.kelurahan.dropdown.empty();
+                if (id) loadAndSelect({ type: 'kelurahan', kecamatan_id: id }, elements.kelurahan, null);
             });
 
-            function loadKecamatan(kabupatenId) {
-                $.ajax({
-                    url: `https://api.goapi.io/regional/kecamatan?kota_id=${kabupatenId}`,
-                    method: 'GET',
-                    headers: { 'X-API-KEY': API_KEY },
-                    success: function(response) {
-                        let kecamatan = $('#kecamatan');
-                        kecamatan.empty();
-                        kecamatan.append($('<option></option>').val('').text('Pilih Kecamatan'));
-                        kecamatan.show();
-
-                        if (response.data) {
-                            $.each(response.data, function(index, item) {
-                                let option = $('<option></option>').val(item.id).text(item.name);
-                                if (item.id == selectedKecamatanId) {
-                                    option.prop('selected', true);
-                                    loadKelurahan(item.id); 
-                                }
-                                kecamatan.append(option);
-                            });
-                        }
-                    }
-                });
-            }
-
-            $('#kecamatan').change(function() {
-                let kecamatanId = $(this).val();
-                if (kecamatanId) {
-                    loadKelurahan(kecamatanId);
-                } else {
-                    $('#kelurahan').hide();
-                }
-            });
-
-            function loadKelurahan(kecamatanId) {
-                $.ajax({
-                    url: `https://api.goapi.io/regional/kelurahan?kecamatan_id=${kecamatanId}`,
-                    method: 'GET',
-                    headers: { 'X-API-KEY': API_KEY },
-                    success: function(response) {
-                        let kelurahan = $('#kelurahan');
-                        kelurahan.empty();
-                        kelurahan.append($('<option></option>').val('').text('Pilih Kelurahan'));
-                        kelurahan.show();
-
-                        if (response.data) {
-                            $.each(response.data, function(index, item) {
-                                let option = $('<option></option>').val(item.id).text(item.name);
-                                if (item.id == selectedKelurahanId) {
-                                    option.prop('selected', true);
-                                }
-                                kelurahan.append(option);
-                            });
-                        }
-                    }
-                });
-            }
+            initializeAddress();
         });
     </script>
 </body>

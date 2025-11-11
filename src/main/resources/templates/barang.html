@@ -4,77 +4,365 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" th:href="@{/icon/ikon.jpg}" type="image/x-icon">
-    <link rel="stylesheet" th:href="@{/css/main.css}">
-    <title>Barang</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Gudang</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Ubuntu', 'sans-serif'],
+            },
+          },
+        },
+      }
+    </script>
 </head>
-<body>
-    <header>
-        <nav>
-            <img th:src="@{/icon/ikon.jpg}" alt="logo" class="logo">
-            <span class="logo-text">Lelang hitam</span>
-        </nav>
-        <nav>
-            <a href="/beranda" class="menu">Beranda</a>
-            <a href="/lelang" class="menu">Lelang</a>
-            <a href="/barang" class="menu">Barang</a>
-            <div class="dropdown">
-                <a class="menu">Transaksi</a>
-                <div class="dropdown-content">
-                <a href="/transaksi-penjual">Penjual</a>
-                <a href="/transaksi-pembeli">Pembeli</a>
+<body class="bg-slate-800 font-sans text-slate-200">
+    <header class="bg-slate-900 sticky top-0 z-50 shadow-md shadow-white/15">
+        <div class="container mx-auto flex justify-between items-center p-4 text-white">
+            <div class="flex items-center gap-3">
+                <a href="/beranda" class="flex items-center gap-3">
+                    <img th:src="@{/icon/ikon.jpg}" alt="logo" class="w-12 h-12 rounded-full">
+                    <span class="text-xl font-bold tracking-wider">LelangkuSenang</span>
+                </a>
+            </div>
+            <nav class="hidden md:flex items-center gap-6 text-md font-medium text-slate-300">
+                <a href="/beranda" class="hover:text-indigo-400 transition-colors duration-300">Beranda</a>
+                <a href="/lelang" class="hover:text-indigo-400 transition-colors duration-300">Lelang</a>
+                <a href="/barang" class="hover:text-indigo-400 transition-colors duration-300">Barang</a>
+                <div id="desktop-transaksi-dropdown" class="relative">
+                    <a href="#" class="cursor-pointer flex items-center gap-1 hover:text-indigo-400 transition-colors duration-300">
+                        Transaksi <i class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+                    </a>
+                    <div class="absolute hidden bg-slate-700 text-white mt-2 rounded-md shadow-lg w-40 z-10">
+                        <a href="/transaksi-penjual" class="block px-4 py-2 hover:bg-slate-600 rounded-t-md">Sebagai Penjual</a>
+                        <a href="/transaksi-pembeli" class="block px-4 py-2 hover:bg-slate-600 rounded-b-md">Sebagai Pembeli</a>
+                    </div>
+                </div>
+                <a href="/chat" class="hover:text-indigo-400 transition-colors duration-300">Chat</a>
+            </nav>
+            <div class="hidden md:flex items-center gap-4">
+                <a href="/profil">
+                    <img th:src="@{${user.fotoProfil}}" alt="Foto Profil" class="w-11 h-11 rounded-full object-cover border-2 border-slate-500 hover:border-indigo-400 transition-all duration-300">
+                </a>
+                <form th:action="@{/logout}" method="POST">
+                     <button type="submit" class="bg-indigo-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-indigo-500 transition-colors duration-300">
+                         Keluar
+                     </button>
+                </form>
+            </div>
+            <div class="md:hidden">
+                <button id="hamburger-button" class="text-white focus:outline-none z-20 relative">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-800 text-white p-4">
+            <nav class="flex flex-col gap-4 text-lg">
+                <a href="/beranda" class="hover:text-indigo-400">Beranda</a>
+                <a href="/lelang" class="hover:text-indigo-400">Lelang</a>
+                <a href="/barang" class="hover:text-indigo-400">Barang</a>
+                <div>
+                    <button id="mobile-transaksi-button" class="w-full text-left flex justify-between items-center hover:text-indigo-400">
+                        <span>Transaksi</span>
+                        <i class="fas fa-chevron-down text-sm transition-transform duration-300"></i>
+                    </button>
+                    <div id="mobile-transaksi-submenu" class="hidden pl-4 pt-2 space-y-2">
+                        <a href="/transaksi-penjual" class="hover:text-indigo-400 block">- Sebagai Penjual</a>
+                        <a href="/transaksi-pembeli" class="hover:text-indigo-400 block">- Sebagai Pembeli</a>
+                    </div>
+                </div>
+                <a href="/chat" class="hover:text-indigo-400">Chat</a>
+                <hr class="border-slate-600"/>
+                <div class="flex items-center justify-between">
+                     <a href="/profil" class="flex items-center gap-3">
+                        <img th:src="@{${user.fotoProfil}}" alt="Foto Profil" class="w-11 h-11 rounded-full object-cover border-2 border-slate-500">
+                        <span>Lihat Profil</span>
+                    </a>
+                    <form th:action="@{/logout}" method="POST">
+                         <button type="submit" class="bg-red-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-red-500">
+                             Keluar
+                         </button>
+                    </form>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col sm:flex-row justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold tracking-tight text-white mb-4 sm:mb-0">
+                Manajemen Gudang
+            </h1>
+            <a href="/tambahbarang" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 shadow-lg shadow-indigo-600/30">
+                <i class="fas fa-plus"></i>
+                <span>Tambah Barang Baru</span>
+            </a>
+        </div>
+
+        <div class="bg-slate-900 p-4 rounded-lg shadow-md mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="md:col-span-2">
+                    <label for="search" class="sr-only">Cari Barang</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-slate-400"></i>
+                        </div>
+                        <input 
+                            type="text" 
+                            name="search" 
+                            id="search" 
+                            class="w-full bg-slate-700 border border-slate-600 rounded-md py-2 pl-10 pr-4 text-white focus:ring-indigo-500 focus:border-indigo-500 placeholder-slate-400" 
+                            placeholder="Cari berdasarkan nama atau ID barang..."
+                            th:value="${currentSearch}"
+                        >
+                    </div>
+                </div>
+                <div>
+                    <label for="statusFilter" class="sr-only">Filter Status</label>
+                    <select 
+                        id="statusFilter" 
+                        name="statusFilter" 
+                        class="w-full bg-slate-700 border border-slate-600 rounded-md py-2 px-3 text-white focus:ring-indigo-500 focus:border-indigo-500"
+                    >
+                        <option value="" th:selected="${currentStatus == null or currentStatus.isEmpty()}">Semua Status</option>
+                        <option value="TERSEDIA" th:selected="${#strings.equals(currentStatus, 'TERSEDIA')}">Tersedia</option>
+                        <option value="DILELANG" th:selected="${#strings.equals(currentStatus, 'DILELANG')}">Dilelang</option>
+                        <option value="TERJUAL" th:selected="${#strings.equals(currentStatus, 'TERJUAL')}">Terjual</option>
+                        <option value="KADALUARSA" th:selected="${#strings.equals(currentStatus, 'KADALUARSA')}">Kadaluarsa</option>
+                        <option value="DITARIK" th:selected="${#strings.equals(currentStatus, 'DITARIK')}">Ditarik</option>
+                    </select>
                 </div>
             </div>
-            <a href="/chat" class="menu">Chat</a>
-        </nav>
-        <nav>
-            <a href="/profil"><img th:src="@{${user.fotoProfil}}" alt="Foto Profil" class="foto-profil"></a>
-            <form action="/logout" method="delete">
-                <button class="button" type="submit">keluar</button>
-            </form>
-        </nav>
-    </header>
-    <main class="mainLelang">
-        <form action="/tambahbarang" method="get">
-            <button class="button" type="submit">tambah</button>
-        </form>
-        <table id="barang">
-            <thead>
-                <tr>
-                    <th>Nama Barang</th>
-                    <th>Deskripsi Barang</th>
-                    <th>Batas Harga</th>
-                    <th>Foto Barang</th>
-                    <th>Harga Awal</th>
-                    <th>Kelipatan Bid</th>
-                    <th>Batas Waktu</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="barang : ${barang}">
-                    <td th:text="${barang.namaBarang}"></td>
-                    <td th:text="${barang.deskripsiBarang}"></td>
-                    <td th:text="${#numbers.formatDecimal(barang.batasHarga, 0, 'POINT', 0, 'COMMA')}"></td>
-                    <td><img th:src="@{${barang.fotoBarang}}" alt="Foto Barang" class="gambarBarang"></td>
-                    <td th:text="${#numbers.formatDecimal(barang.hargaAwal, 0, 'POINT', 0, 'COMMA')}"></td>
-                    <td th:text="${#numbers.formatDecimal(barang.kelipatanBid, 0, 'POINT', 0, 'COMMA')}"></td>
-                    <td th:text="${barang.batasWaktu}"></td>
-                    <td>
-                        <div class="pilihan">
-                            <a th:href="@{/editbarang/(id=${barang.id})}" class="buttonA">Edit</a>
-                            <form action="/hapusbarang/" method="POST" style="display:inline;">
-                                <input type="hidden" th:name="id" th:value="${barang.id}">
-                                <button type="submit" class="button">Hapus</button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </main>
-    <footer>
+        </div>
 
-    </footer>
+        <div class="bg-slate-900 rounded-lg shadow-md overflow-hidden">
+            
+            <div class="overflow-x-auto hidden md:block">
+                <table class="w-full text-sm text-left text-slate-300">
+                    <thead class="text-xs text-slate-400 uppercase bg-slate-800">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 border-r border-white/15 text-center">Barang</th>
+                            <th scope="col" class="px-6 py-3 border-r border-white/15 text-center">Status</th>
+                            <th scope="col" class="px-6 py-3 border-r border-white/15 text-center">Harga Awal</th>
+                            <th scope="col" class="px-6 py-3 border-r border-white/15 text-center">Tanggal Masuk</th>
+                            <th scope="col" class="px-6 py-3 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr th:each="barang : ${gudangItems}" class="hover:bg-slate-800/50 transition-colors duration-200">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-4">
+                                    <img th:src="@{${barang.fotoBarang}}" alt="Foto Barang" class="w-16 h-16 rounded-md object-cover">
+                                    <div>
+                                        <div class="font-bold text-white" th:text="${barang.namaBarang}">Nama Barang Mewah</div>
+                                        <div class="text-xs text-slate-400" th:text="'ID: ' + ${barang.id}">ID: BRG-001</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="px-3 py-1 text-xs font-semibold rounded-full"
+                                    th:text="${barang.status}"
+                                    th:classappend="${barang.status.name() == 'TERSEDIA'} ? 'bg-green-500/20 text-green-400' :
+                                                    (${barang.status.name() == 'DILELANG'} ? 'bg-yellow-500/20 text-yellow-400' :
+                                                    (${barang.status.name() == 'TERJUAL'} ? 'bg-blue-500/20 text-blue-400' :
+                                                    (${barang.status.name() == 'KADALUARSA'} ? 'bg-gray-500/20 text-gray-400' : 'bg-red-500/20 text-red-400')))">
+                                    STATUS
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 font-mono text-white text-center" th:text="'Rp ' + ${#numbers.formatDecimal(barang.hargaAwal, 0, 'POINT', 0, 'COMMA')}">
+                                Rp 15.000.000
+                            </td>
+                            <td class="px-6 py-4 text-center" th:text="${#temporals.format(barang.tanggalMasuk, 'dd MMM yyyy')}">
+                                25 Agu 2025
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center justify-center gap-4 text-lg">
+                                    <th:block th:if="${barang.status.name() == 'TERSEDIA'}">
+                                        <a th:href="@{/lelang/mulai(id=${barang.id})}" class="text-slate-400 hover:text-green-400 transition-colors" title="Mulai Lelang">
+                                            <i class="fas fa-gavel"></i>
+                                        </a>
+                                        <a th:href="@{/editbarang(id=${barang.id})}" class="text-slate-400 hover:text-indigo-400 transition-colors" title="Edit Barang">
+                                            <i class="fas fa-pencil-alt"></i>
+                                        </a>
+                                        <form th:action="@{/hapusbarang/}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus barang ini?');">
+                                            <input type="hidden" name="id" th:value="${barang.id}" />
+                                            <button type="submit" class="text-slate-400 hover:text-red-500 transition-colors bg-transparent border-none p-0" title="Hapus Barang">
+                                                <i class="fas fa-trash-can"></i>
+                                            </button>
+                                        </form>
+                                    </th:block>
+
+                                    <th:block th:unless="${barang.status.name() == 'TERSEDIA'}">
+                                        <span class="text-xs text-slate-500 italic">-</span>
+                                    </th:block>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="md:hidden p-4 space-y-4">
+                <div th:each="barang : ${gudangItems}" class="bg-slate-800 rounded-lg shadow p-4">
+                    <div class="flex items-start gap-4">
+                        <img th:src="@{${barang.fotoBarang}}" alt="Foto Barang" class="w-20 h-20 rounded-md object-cover">
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-bold text-white" th:text="${barang.namaBarang}">Nama Barang Mewah</h3>
+                                    <p class="text-xs text-slate-400" th:text="'ID: ' + ${barang.id}">ID: BRG-001</p>
+                                </div>
+                                <span class="flex-shrink-0 ml-2 px-2 py-0.5 text-xs font-semibold rounded-full"
+                                    th:text="${barang.status}"
+                                    th:classappend="${barang.status.name() == 'TERSEDIA'} ? 'bg-green-500/20 text-green-400' :
+                                                    (${barang.status.name() == 'DILELANG'} ? 'bg-yellow-500/20 text-yellow-400' :
+                                                    (${barang.status.name() == 'TERJUAL'} ? 'bg-blue-500/20 text-blue-400' :
+                                                    (${barang.status.name() == 'KADALUARSA'} ? 'bg-gray-500/20 text-gray-400' : 'bg-red-500/20 text-red-400')))">
+                                    STATUS
+                                </span>
+                            </div>
+                            <div class="mt-3 text-sm space-y-1">
+                                <p><strong class="text-slate-400">Harga Awal:</strong> <span class="font-mono" th:text="'Rp ' + ${#numbers.formatDecimal(barang.hargaAwal, 0, 'POINT', 0, 'COMMA')}">Rp 15.000.000</span></p>
+                                <p><strong class="text-slate-400">Tgl Masuk:</strong> <span th:text="${#temporals.format(barang.tanggalMasuk, 'dd MMM yyyy')}">25 Agu 2025</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-700 flex justify-end gap-3">
+                        <th:block th:if="${barang.status.name() == 'TERSEDIA'}">
+                            <a th:href="@{/lelang/mulai(id=${barang.id})}" class="flex-1 text-center bg-green-600/50 hover:bg-green-600 text-white text-sm font-bold py-2 px-3 rounded-md transition-colors">
+                                <i class="fas fa-gavel mr-1"></i> Lelang
+                            </a>
+                            <a th:href="@{/editbarang(id=${barang.id})}" class="flex-1 text-center bg-indigo-600/80 hover:bg-indigo-600 text-white text-sm font-bold py-2 px-3 rounded-md transition-colors">
+                                <i class="fas fa-pencil-alt mr-1"></i> Edit
+                            </a>
+                            <form th:action="@{/hapusbarang/}" method="POST" class="flex-1" onsubmit="return confirm('Apakah Anda yakin ingin menghapus barang ini?');">
+                                <input type="hidden" name="id" th:value="${barang.id}" />
+                                <button type="submit" class="w-full text-center bg-red-600/80 hover:bg-red-600 text-white text-sm font-bold py-2 px-3 rounded-md transition-colors">
+                                    <i class="fas fa-trash-can mr-1"></i> Hapus
+                                </button>
+                            </form>
+                        </th:block>
+
+                        <th:block th:unless="${barang.status.name() == 'TERSEDIA'}">
+                            <p class="text-xs text-slate-500 italic w-full text-center">Tidak ada aksi yang tersedia untuk status ini.</p>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${gudangItems.size() > 0}" class="flex flex-col sm:flex-row justify-between items-center mt-6 px-2 text-sm">
+            <div class="text-slate-400 mb-2 sm:mb-0">
+                Menampilkan 
+                <span class="font-semibold text-white" th:text="${(currentPage - 1) * 10 + 1}"></span> - 
+                <span class="font-semibold text-white" th:text="${(currentPage - 1) * 10 + gudangItems.size()}"></span> dari 
+                <span class="font-semibold text-white" th:text="${totalItems}"></span> barang
+            </div>
+
+            <div class="flex items-center gap-2" th:if="${totalPages > 1}">
+                <a th:href="@{/barang(page=${currentPage - 1}, search=${currentSearch}, status=${currentStatus})}"
+                th:classappend="${currentPage == 1} ? 'pointer-events-none bg-slate-800 text-slate-600' : 'bg-slate-700/50 hover:bg-slate-700'"
+                class="inline-flex items-center justify-center w-10 h-10 rounded-md transition-colors">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+
+                <span class="text-white" th:text="'Halaman ' + ${currentPage} + ' dari ' + ${totalPages}"></span>
+
+                <a th:href="@{/barang(page=${currentPage + 1}, search=${currentSearch}, status=${currentStatus})}"
+                th:classappend="${currentPage == totalPages} ? 'pointer-events-none bg-slate-800 text-slate-600' : 'bg-slate-700/50 hover:bg-slate-700'"
+                class="inline-flex items-center justify-center w-10 h-10 rounded-md transition-colors">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </div>
+        </div>
+    </main>
+    <script>
+        $(document).ready(function() {
+            // --- Kode untuk Hamburger & Dropdown (Sudah Ada) ---
+            const hamburgerButton = $('#hamburger-button');
+            const mobileMenu = $('#mobile-menu');
+
+            hamburgerButton.click(function(event) {
+                event.stopPropagation();
+                mobileMenu.slideToggle();
+            });
+
+            $(document).click(function(event) {
+                if (mobileMenu.is(':visible') && !mobileMenu.is(event.target) && mobileMenu.has(event.target).length === 0) {
+                    mobileMenu.slideUp();
+                }
+            });
+
+            const dropdown = $('#desktop-transaksi-dropdown');
+            let timeout;
+            dropdown.on('mouseenter', function() {
+                clearTimeout(timeout);
+                $(this).find('.absolute').removeClass('hidden');
+                $(this).find('.fa-chevron-down').addClass('rotate-180');
+            });
+            dropdown.on('mouseleave', function() {
+                timeout = setTimeout(function() {
+                    dropdown.find('.absolute').addClass('hidden');
+                    dropdown.find('.fa-chevron-down').removeClass('rotate-180');
+                }, 200);
+            });
+
+            $('#mobile-transaksi-button').click(function() {
+                $('#mobile-transaksi-submenu').slideToggle();
+                $(this).find('i').toggleClass('rotate-180');
+            });
+
+            // --- KODE BARU UNTUK FILTER DAN SEARCH ---
+
+            let searchTimeout;
+
+            // Fungsi untuk melakukan filtering
+            function performFilter() {
+                // 1. Ambil nilai dari input search dan select filter
+                const searchQuery = $('#search').val();
+                const statusFilter = $('#statusFilter').val();
+                
+                // 2. Buat URL baru berdasarkan state saat ini
+                const currentUrl = new URL(window.location.href);
+                
+                // 3. Set atau hapus parameter 'search'
+                if (searchQuery) {
+                    currentUrl.searchParams.set('search', searchQuery);
+                } else {
+                    currentUrl.searchParams.delete('search');
+                }
+
+                // 4. Set atau hapus parameter 'status'
+                if (statusFilter) {
+                    currentUrl.searchParams.set('status', statusFilter);
+                } else {
+                    currentUrl.searchParams.delete('status');
+                }
+                
+                // 5. Reset halaman ke 1 setiap kali filter berubah
+                currentUrl.searchParams.set('page', '1');
+
+                // 6. Arahkan browser ke URL yang baru dibuat
+                window.location.href = currentUrl.toString();
+            }
+
+            // Event listener untuk input search
+            $('#search').on('keyup', function() {
+                // Debouncing: Tunggu 500ms setelah user berhenti mengetik baru jalankan filter
+                // Ini sangat penting untuk efisiensi, agar tidak me-request ke server setiap kali satu huruf diketik
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(performFilter, 500);
+            });
+
+            // Event listener untuk select filter status
+            $('#statusFilter').on('change', function() {
+                // Langsung jalankan filter ketika status diubah
+                performFilter();
+            });
+        });
+    </script>
 </body>
 </html>

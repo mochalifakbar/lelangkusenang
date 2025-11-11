@@ -656,3 +656,42 @@ nav {
     height: 100%;
     object-fit: fill;
 }
+
+/* Styling untuk Foto Profil Interaktif */
+.profil-foto-container {
+    position: relative;
+    cursor: pointer;
+    width: 225px; /* Sesuaikan dengan ukuran .profil-foto */
+    height: 225px; /* Sesuaikan dengan ukuran .profil-foto */
+}
+
+.profil-foto-container .profil-foto {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.profil-foto-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem; /* Ukuran ikon kamera */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 25%; /* Sesuaikan dengan border-radius .profil-foto */
+}
+
+.profil-foto-container:hover .profil-foto-overlay {
+    opacity: 1;
+}
+
+#fotoProfilInput {
+    display: none; /* Sembunyikan input file asli */
+}

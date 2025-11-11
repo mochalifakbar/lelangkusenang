@@ -1,6 +1,7 @@
 package proyekuas.uas.controller;
 
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class LelangController {
     }
     @PostMapping("/submit-bit")
     public String submitBid(@RequestParam("id") Long id, 
-                            @RequestParam("bid") double bid, 
+                            @RequestParam("bid") BigDecimal bid, 
                             HttpSession session) {
         if(session.getAttribute("loggedUser") == null){
             return "redirect:/login";
@@ -41,6 +42,19 @@ public class LelangController {
         User user = userService.findByUsername(session.getAttribute("loggedUser").toString());
         
         lelangService.addLelang(id, bid, user);
+
+        return "redirect:/lelang";
+    }
+
+    @PostMapping("/beli-sekarang")
+    public String beliSekarang(@RequestParam("id") Long id, HttpSession session) {
+        if(session.getAttribute("loggedUser") == null){
+            return "redirect:/login";
+        }
+
+        User user = userService.findByUsername(session.getAttribute("loggedUser").toString());
+
+        lelangService.beliSekarang(id, user);
 
         return "redirect:/lelang";
     }
@@ -58,5 +72,22 @@ public class LelangController {
         model.addAttribute("user", user);
         model.addAttribute("barang", barang);
         return "lelang";
+    }
+
+    @GetMapping("/lelang/mulai")
+    public String mulaiLelang(@RequestParam("id") Long id, HttpSession session /* atau @AuthenticationPrincipal User currentUser */) {
+        if (session.getAttribute("loggedUser") == null) { // Ganti dengan if(currentUser == null) jika sudah migrasi
+            return "redirect:/login";
+        }
+        User currentUser = userService.findByUsername(session.getAttribute("loggedUser").toString());
+        
+        try {
+            lelangService.mulaiLelang(id, currentUser);
+        } catch (IllegalStateException e) {
+            // Opsional: Tambahkan flash attribute untuk menampilkan pesan error di halaman
+            System.err.println(e.getMessage());
+        }
+
+        return "redirect:/barang"; // Kembali ke halaman gudang
     }
 }

@@ -1,5 +1,6 @@
 package proyekuas.uas.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -39,8 +40,8 @@ public class Transaksi {
     @JoinColumn(name = "barang_id", nullable = false)
     private Barang barang;
 
-    @Column(name = "harga", nullable = false)
-    private Double harga;
+    @Column(name = "harga", nullable = false, precision = 15, scale = 2)
+    private BigDecimal harga;
 
     @Column(name = "waktu_pembelian", nullable = false)
     private LocalDateTime waktuPembelian;

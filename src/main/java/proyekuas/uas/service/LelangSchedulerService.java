@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import proyekuas.uas.entity.Barang;
+import proyekuas.uas.entity.Barang.Status;
 import proyekuas.uas.entity.Transaksi;
 
 @Service
@@ -23,18 +24,22 @@ public class LelangSchedulerService {
         this.barangService = barangService;
     }
 
-    @Scheduled(fixedRate = 60000)
+     @Scheduled(fixedRate = 60000)
     public void cekLelangSelesai() {
-        List<Barang> listBarang = barangService.findAll().stream().filter(barang -> barang.getBatasWaktu().isBefore(LocalDateTime.now())).collect(Collectors.toList());
-        for (Barang barang : listBarang) {
-            if(!barang.getStatus().equals("TERJUAL")) {
-                if(barang.getPemenang() != null) {
-                    lelangService.prosesLelangSelesai(barang);
-                } else {
-                    barang.setStatus("GAGAL");
-                    barangService.updateBarang(barang);
-                }
+        List<Barang> lelangLewatWaktu = barangService.findAll().stream()
+            .filter(barang -> barang.getStatus() == Status.DILELANG && barang.getBatasWaktu().isBefore(LocalDateTime.now()))
+            .collect(Collectors.toList());
+
+        for (Barang barang : lelangLewatWaktu) {
+            if (barang.getPemenang() != null) {
+                // Ini seharusnya sudah ditangani oleh addLelang/beliSekarang, tapi sebagai pengaman
+                barang.setStatus(Status.TERJUAL);
+                lelangService.prosesLelangSelesai(barang);
+            } else {
+                // Tidak ada pemenang, lelang kadaluarsa
+                barang.setStatus(Status.KADALUARSA);
             }
+            barangService.updateBarang(barang);
         }
     }
 

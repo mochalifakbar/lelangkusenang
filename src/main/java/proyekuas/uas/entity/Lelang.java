@@ -1,5 +1,6 @@
 package proyekuas.uas.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -32,8 +33,8 @@ public class Lelang {
     @JoinColumn(name = "id_pelelang", nullable = false)
     private User pelelang;
 
-    @Column(name = "harga_bid", nullable = false)
-    private Double hargaBid;
+    @Column(name = "harga_bid", nullable = false, precision = 15, scale = 2)
+    private BigDecimal hargaBid;
 
     @Column(name = "waktu_bid", nullable = false)
     private LocalDateTime waktuBid;

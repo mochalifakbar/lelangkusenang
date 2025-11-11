@@ -3,77 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LelangkuSenang - Beranda</title>
+
     <link rel="shortcut icon" th:href="@{/icon/ikon.jpg}" type="image/x-icon">
-    <link rel="stylesheet" th:href="@{/css/main.css}">
-    <title>Beranda</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              // Menyesuaikan font default agar sama dengan kode asli Anda
+              sans: ['Ubuntu', 'sans-serif'],
+            },
+          },
+        },
+      }
+    </script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /*
+         * Gradien dan transisi yang sebelumnya custom,
+         * sekarang sebagian besar dikelola oleh utility classes Tailwind.
+         * Kita hanya menyimpan style yang sangat mendasar jika diperlukan.
+         */
+        .gradient-overlay {
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 30%, rgba(0,0,0,0.3) 50%, transparent 100%);
+        }
+    </style>
 </head>
-<body>
-    <header>
-        <nav>
-            <img th:src="@{/icon/ikon.jpg}" alt="logo" class="logo">
-            <span class="logo-text">Lelang hitam</span>
-        </nav>
-        <nav>
-            <a href="/beranda" class="menu">Beranda</a>
-            <a href="/lelang" class="menu">Lelang</a>
-            <a href="/barang" class="menu">Barang</a>
-            <div class="dropdown">
-                <a class="menu">Transaksi</a>
-                <div class="dropdown-content">
-                <a href="/transaksi-penjual">Penjual</a>
-                <a href="/transaksi-pembeli">Pembeli</a>
-                </div>
+<body class="bg-slate-800 font-sans text-slate-200">
+    <header class="bg-slate-900 sticky top-0 z-50 shadow-md shadow-white/15">
+        <div class="container mx-auto flex justify-between items-center p-4 text-white">
+            <div class="flex items-center gap-3">
+                <a th:href="@{/beranda}" class="flex items-center gap-3">
+                    <img th:src="@{/icon/ikon.jpg}" alt="logo" class="w-12 h-12 rounded-full">
+                    <span class="text-xl font-bold tracking-wider">LelangkuSenang</span>
+                </a>
             </div>
-            <a href="/chat" class="menu">Chat</a>
-        </nav>
-        <nav>
-            <a href="/profil"><img th:src="@{${user.fotoProfil}}" alt="Foto Profil" class="foto-profil"></a>
-            <form action="/logout" method="delete">
-                <button class="button" type="submit">keluar</button>
-            </form>
-        </nav>
+            <nav class="hidden md:flex items-center gap-6 text-md font-medium text-slate-300">
+                <a th:href="@{/beranda}" class="hover:text-indigo-400 transition-colors duration-300">Beranda</a>
+                <a th:href="@{/lelang}" class="hover:text-indigo-400 transition-colors duration-300">Lelang</a>
+                <a th:href="@{/barang}" class="hover:text-indigo-400 transition-colors duration-300">Barang</a>
+                <div id="desktop-transaksi-dropdown" class="relative">
+                    <a href="#" class="cursor-pointer flex items-center gap-1 hover:text-indigo-400 transition-colors duration-300">
+                        Transaksi <i class="fas fa-chevron-down text-xs transition-transform duration-300"></i>
+                    </a>
+                    <div class="absolute hidden bg-slate-700 text-white mt-2 rounded-md shadow-lg w-40 z-10">
+                        <a th:href="@{/transaksi-penjual}" class="block px-4 py-2 hover:bg-slate-600 rounded-t-md">Sebagai Penjual</a>
+                        <a th:href="@{/transaksi-pembeli}" class="block px-4 py-2 hover:bg-slate-600 rounded-b-md">Sebagai Pembeli</a>
+                    </div>
+                </div>
+                <a th:href="@{/chat}" class="hover:text-indigo-400 transition-colors duration-300">Chat</a>
+            </nav>
+            <div class="hidden md:flex items-center gap-4">
+                <a th:href="@{/profil}">
+                    <img th:src="@{${user.fotoProfil}}" alt="Foto Profil" class="w-11 h-11 rounded-full object-cover border-2 border-slate-500 hover:border-indigo-400 transition-all duration-300">
+                </a>
+                <form th:action="@{/logout}" method="POST">
+                     <button type="submit" class="bg-indigo-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-indigo-500 transition-colors duration-300">
+                         Keluar
+                     </button>
+                </form>
+            </div>
+            <div class="md:hidden">
+                <button id="hamburger-button" class="text-white focus:outline-none z-20 relative">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-800 text-white p-4">
+            <nav class="flex flex-col gap-4 text-lg">
+                <a th:href="@{/beranda}" class="hover:text-indigo-400">Beranda</a>
+                <a th:href="@{/lelang}" class="hover:text-indigo-400">Lelang</a>
+                <a th:href="@{/barang}" class="hover:text-indigo-400">Barang</a>
+                <div>
+                    <button id="mobile-transaksi-button" class="w-full text-left flex justify-between items-center hover:text-indigo-400">
+                        <span>Transaksi</span>
+                        <i class="fas fa-chevron-down text-sm transition-transform duration-300"></i>
+                    </button>
+                    <div id="mobile-transaksi-submenu" class="hidden pl-4 pt-2 space-y-2">
+                        <a th:href="@{/transaksi-penjual}" class="hover:text-indigo-400 block">- Sebagai Penjual</a>
+                        <a th:href="@{/transaksi-pembeli}" class="hover:text-indigo-400 block">- Sebagai Pembeli</a>
+                    </div>
+                </div>
+                <a th:href="@{/chat}" class="hover:text-indigo-400">Chat</a>
+                <hr class="border-slate-600"/>
+                <div class="flex items-center justify-between">
+                     <a th:href="@{/profil}" class="flex items-center gap-3">
+                         <img th:src="@{${user.fotoProfil}}" alt="Foto Profil" class="w-11 h-11 rounded-full object-cover border-2 border-slate-500">
+                         <span>Lihat Profil</span>
+                     </a>
+                     <form th:action="@{/logout}" method="POST">
+                         <button type="submit" class="bg-red-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-red-500">
+                             Keluar
+                         </button>
+                     </form>
+                </div>
+            </nav>
+        </div>
     </header>
-    <main class="main">
-        <div class="templateForm">
-            <div class="slideshow-container">
-                <div th:each="barang : ${barang}" class="slide fade">
-                    <img th:src="@{${barang.fotoBarang}}" class="fotoSlide">
-                    <div class="text">
-                        <h3 th:text="${barang.namaBarang}"></h3>
-                        <p th:text="${barang.deskripsiBarang}"></p>
-                        <p><strong>Batas Harga:</strong> <span th:text="${#numbers.formatDecimal(barang.batasHarga, 0, 'POINT', 0, 'COMMA')}"></span></p>
-                        <p><strong>Harga Awal:</strong> <span th:text="${#numbers.formatDecimal(barang.hargaAwal, 0, 'POINT', 0, 'COMMA')}"></span></p>
-                        <p><strong>Kelipatan Bid:</strong> <span th:text="${#numbers.formatDecimal(barang.kelipatanBid, 0, 'POINT', 0, 'COMMA')}"></span></p>
-                        <p><strong>Batas Waktu:</strong> <span th:text="${barang.batasWaktu}"></span></p>
+
+    <main class="container mx-auto py-8 px-4">
+        <div th:if="${barang.isEmpty()}" class="text-center text-slate-400 text-2xl mt-20">
+            <p>Saat ini belum ada barang yang sedang dilelang.</p>
+            <p class="text-lg mt-2">Silakan cek kembali nanti!</p>
+        </div>
+        
+        <div th:unless="${barang.isEmpty()}" id="slideshow-container" class="relative w-full max-w-5xl mx-auto h-[70vh] rounded-2xl shadow-2xl shadow-black/30 overflow-hidden">
+            
+            <div th:each="brg, iterStat : ${barang}" 
+                 th:id="'slide-' + ${iterStat.index}"
+                 class="absolute inset-0 transition-opacity duration-1000 ease-in-out flex flex-col justify-end"
+                 th:classappend="${iterStat.index == 0} ? 'opacity-100' : 'opacity-0'">
+
+                <img th:src="@{${brg.fotoBarang}}" class="absolute inset-0 w-full h-full object-cover">
+                <div class="absolute inset-0 gradient-overlay flex items-end">
+                    
+                    <div x-data="{ expanded: false }" class="bg-black/70 p-6 rounded-lg shadow-lg">
+
+                        <h2 class="text-xl font-bold mb-2 text-white" th:text="${brg.namaBarang}"></h2>
+
+                        <div 
+                            class="relative overflow-hidden transition-all duration-500 ease-in-out"
+                            :class="expanded ? 'max-h-[1000px]' : 'max-h-24'"> 
+                            <p class="text-slate-300" th:text="${brg.deskripsiBarang}"></p>
+
+                            <div x-show="!expanded" 
+                                aria-hidden="true"
+                                class="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-black/70 to-transparent">
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button 
+                                @click="expanded = !expanded" 
+                                class="bg-indigo-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-indigo-500 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                                <span x-text="expanded ? 'Tampilkan Lebih Sedikit' : 'Lihat Lengkap'"></span>
+                            </button>
+                        </div>
+
                     </div>
                 </div>
             </div>
         </div>
     </main>
-    <footer>
 
-    </footer>
     <script>
-        let slideIndex = 0;
-        showSlides();
-    
-        function showSlides() {
-            let slides = document.getElementsByClassName("slide");
-    
-            for (let i = 0; i < slides.length; i++) {
-                slides[i].style.display = "none";
+        $(document).ready(function() {
+            // Script untuk Hamburger Menu
+            const hamburgerButton = $('#hamburger-button');
+            const mobileMenu = $('#mobile-menu');
+
+            hamburgerButton.click(function(event) {
+                event.stopPropagation();
+                mobileMenu.slideToggle();
+            });
+
+            // Menutup menu jika diklik di luar area menu
+            $(document).click(function(event) {
+                if (mobileMenu.is(':visible') && !mobileMenu.is(event.target) && mobileMenu.has(event.target).length === 0) {
+                    mobileMenu.slideUp();
+                }
+            });
+
+            // Dropdown Desktop
+            const dropdown = $('#desktop-transaksi-dropdown');
+            let timeout;
+            dropdown.on('mouseenter', function() {
+                clearTimeout(timeout);
+                $(this).find('.absolute').removeClass('hidden');
+                $(this).find('.fa-chevron-down').addClass('rotate-180');
+            });
+            dropdown.on('mouseleave', function() {
+                timeout = setTimeout(function() {
+                    dropdown.find('.absolute').addClass('hidden');
+                    dropdown.find('.fa-chevron-down').removeClass('rotate-180');
+                }, 200);
+            });
+
+            // Dropdown Mobile
+            $('#mobile-transaksi-button').click(function() {
+                $('#mobile-transaksi-submenu').slideToggle();
+                $(this).find('i').toggleClass('rotate-180');
+            });
+
+            // Script untuk Slideshow (Tetap menggunakan jQuery)
+            let currentSlide = 0;
+            // Selektor menargetkan div yang di-generate oleh th:each di dalam container
+            const slides = $('#slideshow-container > div'); 
+            const totalSlides = slides.length;
+
+            if (totalSlides > 1) {
+                setInterval(function() {
+                    $('#slide-' + currentSlide).removeClass('opacity-100').addClass('opacity-0');
+                    currentSlide = (currentSlide + 1) % totalSlides;
+                    $('#slide-' + currentSlide).removeClass('opacity-0').addClass('opacity-100');
+                }, 7000); // Interval 7 detik
             }
-    
-            slideIndex++;
-            if (slideIndex > slides.length) {
-                slideIndex = 1;
-            }
-    
-            slides[slideIndex - 1].style.display = "block";
-    
-            setTimeout(showSlides, 3000);
-        }
+            
+            // TIDAK PERLU SCRIPT "BACA SELENGKAPNYA" DI SINI
+            // Fungsionalitas tersebut sudah ditangani oleh Alpine.js secara inline di HTML.
+        });
     </script>
 </body>
 </html>

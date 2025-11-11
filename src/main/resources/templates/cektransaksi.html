@@ -13,7 +13,7 @@
     <header>
         <nav>
             <img th:src="@{/icon/ikon.jpg}" alt="logo" class="logo">
-            <span class="logo-text">Lelang hitam</span>
+            <span class="logo-text">LelangkuSenang</span>
         </nav>
         <nav>
             <a href="/beranda" class="menu">Beranda</a>
@@ -383,7 +383,7 @@
                 doc.text(`tanggal: ${transaksi.tanggalTransaksi}`, 10, 45);
                 
                 doc.text('PENGESAHAN', 90, 60);
-                doc.text(doc.splitTextToSize(`Dengan ini, Lelang Hitam menyatakan bahwa transaksi berikut telah diverifikasi dan dinyatakan sah:`, 180), 10, 75);
+                doc.text(doc.splitTextToSize(`Dengan ini, LelangkuSenang menyatakan bahwa transaksi berikut telah diverifikasi dan dinyatakan sah:`, 180), 10, 75);
                 
                 doc.text(`Pembeli: ${pembeli.nama}`, 10, 95);
                 doc.text(`Email: ${pembeli.email}`, 15, 100);
@@ -410,11 +410,11 @@
 
                 doc.text(doc.splitTextToSize(`Dokumen ini diterbitkan sebagai bukti bahwa transaksi telah disahkan sesuai dengan ketentuan yang berlaku.`, 180), 10, 225);
                 
-                doc.text('Lelang Hitam,', 13, 257);
+                doc.text('LelangkuSenang,', 13, 257);
                 doc.text(`Pembeli`, 16, 270);
                 doc.text(`${pembeli.nama}`, 9, 282);
 
-                doc.text('Lelang Hitam,', 160, 257);
+                doc.text('LelangkuSenang,', 160, 257);
                 doc.text(`penjual`, 163, 270);
                 doc.text(`${penjual.nama}`, 156, 282);
     

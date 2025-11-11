@@ -3,157 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" th:href="@{/icon/ikon.jpg}" type="image/x-icon">
-    <link rel="stylesheet" th:href="@{/css/main.css}">
-    <title>Buat akun baru</title>
+    <title>Register LelangkuSenang</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Ubuntu', 'sans-serif'],
+            },
+          },
+        },
+      }
+    </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<body>
-    <div class="templateform">
-        <div class="register">
-            <span class="judul">Register Akun</span>
-            <form th:action="@{/register}" method="POST" th:object="${registerForm}" class="form">
-                <input class="input" type="text" th:field="*{user.nama}" placeholder="Nama" required>
-                <input class="input" type="email" th:field="*{user.email}" placeholder="Email" required>
-                <input class="input" type="text" th:field="*{user.username}" placeholder="Username" required>
-                <input class="input" type="date" th:field="*{user.tanggalLahir}">
-                <input class="input" type="text" th:field="*{user.nomorTelepon}" placeholder="Nomor HP" required>
-                <input class="input" type="password" th:field="*{user.password}" placeholder="Password" required>
-                
-                <select class="inputoption" id="provinsi" th:field="*{alamat.provinsi}" required>
-                    <option value="">Pilih Provinsi</option>
-                </select>
-                
-                <select class="inputoption" id="kabupaten" th:field="*{alamat.kota}" required style="display:none">
-                    <option value="">Pilih Kabupaten</option>
-                </select>
-                
-                <select class="inputoption" id="kecamatan" th:field="*{alamat.kecamatan}" required style="display:none">
-                    <option value="">Pilih Kecamatan</option>
-                </select>
-            
-                <select class="inputoption" id="kelurahan" th:field="*{alamat.desa}" required style="display:none">
-                    <option value="">Pilih Kelurahan</option>
-                </select>
-                
-                <button class="button" type="submit">Register</button>
-            </form>            
+<body class="bg-slate-900 font-sans text-gray-200">
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-4xl bg-slate-800/70 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
+            <h1 class="text-3xl font-bold text-center text-white mb-8">
+                Buat Akun Baru
+            </h1>
+
+            <form th:action="@{/register}" method="POST" th:object="${registerForm}">
+                <div class="flex flex-wrap gap-x-6 gap-y-5">
+
+                    <div class="flex flex-col gap-2 flex-1 min-w-[250px]">
+                        <label for="nama" class="font-semibold text-gray-300">Nama Lengkap</label>
+                        <input id="nama" type="text" th:field="*{user.nama}" placeholder="Masukkan nama" required class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
+                    </div>
+                    <div class="flex flex-col gap-2 flex-1 min-w-[250px]">
+                        <label for="email" class="font-semibold text-gray-300">Email</label>
+                        <input id="email" type="email" th:field="*{user.email}" placeholder="contoh@email.com" required class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
+                    </div>
+                    <div class="flex flex-col gap-2 flex-1 min-w-[250px]">
+                        <label for="username" class="font-semibold text-gray-300">Username</label>
+                        <input id="username" type="text" th:field="*{user.username}" placeholder="Pilih username unik" required class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
+                    </div>
+                    <div class="flex flex-col gap-2 flex-1 min-w-[250px]">
+                        <label for="tanggalLahir" class="font-semibold text-gray-300">Tanggal Lahir</label>
+                        <input id="tanggalLahir" type="date" th:field="*{user.tanggalLahir}" required class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
+                    </div>
+                    <div class="flex flex-col gap-2 flex-1 min-w-[250px]">
+                        <label for="nomorTelepon" class="font-semibold text-gray-300">Nomor HP</label>
+                        <input id="nomorTelepon" type="text" th:field="*{user.nomorTelepon}" placeholder="08xxxxxxxxxx" required class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
+                    </div>
+                    <div class="flex flex-col gap-2 flex-1 min-w-[250px]">
+                        <label for="password" class="font-semibold text-gray-300">Password</label>
+                        <input id="password" type="password" th:field="*{user.password}" placeholder="Buat password yang kuat" required class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
+                    </div>
+
+                    <div class="flex flex-col gap-2 flex-1 min-w-[250px]">
+                        <div class="flex items-center gap-2">
+                            <label for="provinsi" class="font-semibold text-gray-300">Provinsi</label>
+                            <div id="provinsi-spinner" class="hidden w-5 h-5 border-2 border-dashed rounded-full animate-spin border-white"></div>
+                        </div>
+                        <select id="provinsi" th:field="*{alamat.provinsi}" required class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
+                            <option value="">-- Klik untuk Memuat --</option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col gap-2 flex-1 min-w-[250px]">
+                         <div class="flex items-center gap-2">
+                            <label for="kabupaten" class="font-semibold text-gray-300">Kabupaten/Kota</label>
+                            <div id="kabupaten-spinner" class="hidden w-5 h-5 border-2 border-dashed rounded-full animate-spin border-white"></div>
+                        </div>
+                        <select id="kabupaten" th:field="*{alamat.kota}" required style="display:none" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
+                            <option value="">Pilih Kabupaten/Kota</option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col gap-2 flex-1 min-w-[250px]">
+                         <div class="flex items-center gap-2">
+                            <label for="kecamatan" class="font-semibold text-gray-300">Kecamatan</label>
+                            <div id="kecamatan-spinner" class="hidden w-5 h-5 border-2 border-dashed rounded-full animate-spin border-white"></div>
+                        </div>
+                        <select id="kecamatan" th:field="*{alamat.kecamatan}" required style="display:none" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
+                            <option value="">Pilih Kecamatan</option>
+                        </select>
+                    </div>
+
+                     <div class="flex flex-col gap-2 flex-1 min-w-[250px]">
+                         <div class="flex items-center gap-2">
+                            <label for="kelurahan" class="font-semibold text-gray-300">Kelurahan/Desa</label>
+                            <div id="kelurahan-spinner" class="hidden w-5 h-5 border-2 border-dashed rounded-full animate-spin border-white"></div>
+                        </div>
+                        <select id="kelurahan" th:field="*{alamat.desa}" required style="display:none" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
+                             <option value="">Pilih Kelurahan/Desa</option>
+                        </select>
+                    </div>
+                    
+                    <div class="flex flex-col gap-2 w-full">
+                        <label for="detail" class="font-semibold text-gray-300">Detail Alamat</label>
+                        <textarea id="detail" th:field="*{alamat.detail}" placeholder="Contoh: Jl. Merdeka No. 17, RT 01 RW 05" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300"></textarea>
+                    </div>
+
+                </div>
+
+                <div class="mt-8">
+                    <button type="submit" class="w-full bg-indigo-600 text-white text-lg font-bold py-4 px-6 rounded-lg hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-indigo-500 transition duration-300">
+                        Buat Akun
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-
+    
     <script>
         $(document).ready(function() {
-            const API_KEY = 'c8645226-7050-554e-fc01-5d3972d8';
+            let provincesLoaded = false;
+
+            const elements = {
+                provinsi: { dropdown: $('#provinsi'), spinner: $('#provinsi-spinner') },
+                kabupaten: { dropdown: $('#kabupaten'), spinner: $('#kabupaten-spinner') },
+                kecamatan: { dropdown: $('#kecamatan'), spinner: $('#kecamatan-spinner') },
+                kelurahan: { dropdown: $('#kelurahan'), spinner: $('#kelurahan-spinner') }
+            };
+
+            // Event handler untuk memuat provinsi saat pertama kali diklik
+            elements.provinsi.dropdown.one('mousedown', function() {
+                if (provincesLoaded) return;
+                
+                elements.provinsi.spinner.removeClass('hidden');
+                populateDropdown({ type: 'provinsi' }, elements.provinsi.dropdown, function() {
+                    provincesLoaded = true;
+                    elements.provinsi.spinner.addClass('hidden');
+                });
+            });
             
-            $.ajax({
-                url: 'https://api.goapi.io/regional/provinsi',
-                method: 'GET',
-                headers: {
-                    'X-API-KEY': API_KEY
-                },
-                success: function(response) {
-                    let provinsi = $('#provinsi');
-                    if(response.data) {
-                        $.each(response.data, function(index, item) {
-                            provinsi.append($('<option></option>').val(item.id).text(item.name));
-                        });
+            // Fungsi terpusat untuk memanggil API dan mengisi dropdown
+            function populateDropdown(params, dropdown, callback) {
+                $.ajax({
+                    url: '/api/regional',
+                    method: 'GET',
+                    data: params,
+                    success: function(response) {
+                        try {
+                            const responseData = JSON.parse(response);
+                            if (responseData.data) {
+                                // Ganti teks opsi pertama menjadi lebih deskriptif
+                                dropdown.find('option:first').text('Pilih ' + params.type.charAt(0).toUpperCase() + params.type.slice(1));
+                                $.each(responseData.data, function(index, item) {
+                                    dropdown.append($('<option></option>').val(item.id).text(item.name));
+                                });
+                            }
+                        } catch (e) {
+                             console.error("Gagal mem-parsing JSON:", e);
+                        }
+                        if (callback) callback();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(`Error fetching data for ${dropdown.attr('id')}:`, error);
+                        if (callback) callback();
                     }
+                });
+            }
+            
+            // Fungsi untuk mereset dan menyembunyikan dropdown turunan
+            function resetDropdowns(...dropdowns) {
+                $.each(dropdowns, function(index, dropdown) {
+                    dropdown.hide().empty().append($('<option></option>').val('').text(`Pilih ${dropdown.attr('id').charAt(0).toUpperCase() + dropdown.attr('id').slice(1)}`));
+                });
+            }
+
+            // Event Listeners untuk setiap perubahan dropdown
+            elements.provinsi.dropdown.change(function() {
+                const provinsiId = $(this).val();
+                resetDropdowns(elements.kabupaten.dropdown, elements.kecamatan.dropdown, elements.kelurahan.dropdown);
+                if (provinsiId) {
+                    elements.kabupaten.spinner.removeClass('hidden');
+                    elements.kabupaten.dropdown.show();
+                    populateDropdown({ type: 'kota', provinsi_id: provinsiId }, elements.kabupaten.dropdown, () => {
+                         elements.kabupaten.spinner.addClass('hidden');
+                    });
                 }
             });
 
-            $('#provinsi').change(function() {
-                let provinsiId = $(this).val();
-                let kabupaten = $('#kabupaten');
-                
-                if(provinsiId) {
-                    kabupaten.show();
-                    kabupaten.prop('disabled', false);
-                    kabupaten.empty();
-                    kabupaten.append($('<option></option>').val('').text('Pilih Kabupaten'));
-                    
-                    $.ajax({
-                        url: `https://api.goapi.io/regional/kota?provinsi_id=${provinsiId}`,
-                        method: 'GET',
-                        headers: {
-                            'X-API-KEY': API_KEY
-                        },
-                        success: function(response) {
-                            if(response.data) {
-                                $.each(response.data, function(index, item) {
-                                    kabupaten.append($('<option></option>').val(item.id).text(item.name));
-                                });
-                            }
-                        }
+            elements.kabupaten.dropdown.change(function() {
+                const kabupatenId = $(this).val();
+                resetDropdowns(elements.kecamatan.dropdown, elements.kelurahan.dropdown);
+                if (kabupatenId) {
+                    elements.kecamatan.spinner.removeClass('hidden');
+                    elements.kecamatan.dropdown.show();
+                    populateDropdown({ type: 'kecamatan', kota_id: kabupatenId }, elements.kecamatan.dropdown, () => {
+                        elements.kecamatan.spinner.addClass('hidden');
                     });
-                } else {
-                    kabupaten.hide();
-                    $('#kecamatan').hide();
-                    $('#kelurahan').hide();
                 }
             });
 
-            $('#kabupaten').change(function() {
-                let kabupatenId = $(this).val();
-                let kecamatan = $('#kecamatan');
-                
-                if(kabupatenId) {
-                    kecamatan.show();
-                    kecamatan.prop('disabled', false);
-                    kecamatan.empty();
-                    kecamatan.append($('<option></option>').val('').text('Pilih Kecamatan'));
-                    
-                    $.ajax({
-                        url: `https://api.goapi.io/regional/kecamatan?kota_id=${kabupatenId}`,
-                        method: 'GET',
-                        headers: {
-                            'X-API-KEY': API_KEY
-                        },
-                        success: function(response) {
-                            if(response.data) {
-                                $.each(response.data, function(index, item) {
-                                    kecamatan.append($('<option></option>').val(item.id).text(item.name));
-                                });
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('Error:', error);
-                        }
+            elements.kecamatan.dropdown.change(function() {
+                const kecamatanId = $(this).val();
+                resetDropdowns(elements.kelurahan.dropdown);
+                if (kecamatanId) {
+                    elements.kelurahan.spinner.removeClass('hidden');
+                    elements.kelurahan.dropdown.show();
+                    populateDropdown({ type: 'kelurahan', kecamatan_id: kecamatanId }, elements.kelurahan.dropdown, () => {
+                        elements.kelurahan.spinner.addClass('hidden');
                     });
-                } else {
-                    kecamatan.hide();
-                    $('#kelurahan').hide();
-                }
-            });
-
-            $('#kecamatan').change(function() {
-                let kecamatanId = $(this).val();
-                let kelurahan = $('#kelurahan');
-                
-                if(kecamatanId) {
-                    kelurahan.show();
-                    kelurahan.prop('disabled', false);
-                    kelurahan.empty();
-                    kelurahan.append($('<option></option>').val('').text('Pilih Kelurahan'));
-                    
-                    $.ajax({
-                        url: `https://api.goapi.io/regional/kelurahan?kecamatan_id=${kecamatanId}`,
-                        method: 'GET',
-                        headers: {
-                            'X-API-KEY': API_KEY
-                        },
-                        success: function(response) {
-                            if(response.data) {
-                                $.each(response.data, function(index, item) {
-                                    kelurahan.append($('<option></option>').val(item.id).text(item.name));
-                                });
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('Error:', error);
-                        }
-                    });
-                } else {
-                    kelurahan.hide();
                 }
             });
         });
