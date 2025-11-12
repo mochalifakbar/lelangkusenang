@@ -105,7 +105,7 @@ This project saves uploaded files (profile pictures, item photos, payment proofs
     `http://localhost:8080/`
 
 ## Project Structure (Overview)
-
+```
 src
 ├── main
 │ ├── java
@@ -128,7 +128,7 @@ src
 │ ├── templates # Thymeleaf HTML files
 │ └── application.yml # Application configuration
 └── test
-
+```
 ## License
 
 This project is licensed under the MIT License.
